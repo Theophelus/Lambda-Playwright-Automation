@@ -1,0 +1,43 @@
+import { expect, Locator, Page } from "@playwright/test";
+import { error } from "console";
+const RegistrationAccountData = require("../data/registrationAccountData.json");
+
+export default class RegistrationAccountPage {
+  private readonly hoverMyAccountDropdownMenuSelector: Locator;
+  private readonly clickRegisterLinkInputSelector: Locator;
+  private readonly firstNameInputSelector: Locator;
+  private readonly lastnameInputSelector: Locator;
+  private readonly emailInputSelector: Locator;
+  private readonly telephoneInputSelector: Locator;
+  private readonly passwordInputSelector: Locator;
+  private readonly confirmInputSelector: Locator;
+  private readonly privacyPolicyInputSelector: Locator;
+  private readonly continueButtonInputSelector: Locator;
+  private readonly successMessageInputSelector: Locator;
+
+  constructor(private page: Page) {
+    this.page = page;
+    this.hoverMyAccountDropdownMenuSelector = this.page.locator(
+      "//a[@class='icon-left both nav-link dropdown-toggle']//span[contains(text(), 'My account')]"
+    );
+    this.clickRegisterLinkInputSelector = this.page.locator(
+      "//a[@href='https://ecommerce-playground.lambdatest.io/index.php?route=account/register']"
+    );
+    this.firstNameInputSelector = this.page.locator("#input-firstname");
+    this.lastnameInputSelector = this.page.locator("#input-lastname");
+    this.emailInputSelector = this.page.locator("#input-email");
+    this.telephoneInputSelector = this.page.locator("#input-telephone");
+    this.passwordInputSelector = this.page.locator("#input-password");
+    this.confirmInputSelector = this.page.locator("#input-confirm");
+    this.privacyPolicyInputSelector = this.page.locator(
+      "//label[@for='input-agree']"
+    );
+    this.continueButtonInputSelector = this.page.locator(
+      "//input[@value='Continue']"
+    );
+    this.successMessageInputSelector = this.page.locator(
+      "//h1[contains(text(), 'Your Account Has Been Created!')]"
+    );
+  }
+
+}
