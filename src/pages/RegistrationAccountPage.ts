@@ -62,5 +62,14 @@ export default class RegistrationAccountPage {
     }
   }
 
+  /** generate random email */
+  createEmail(): string {
+    let randomNumbers: string = Math.trunc(Math.random() * 1000000).toString();
+    return `${randomNumbers}@gmail.com`;
+  }
+
+  generateRandomPassword(): string {
+    return Math.trunc(Math.random() * 1000000).toString();
+  }
   
 }
