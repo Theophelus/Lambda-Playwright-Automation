@@ -6,7 +6,9 @@ import { defineConfig, devices } from "@playwright/test";
  */
 // import dotenv from 'dotenv';
 // import path from 'path';
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
+if (!process.env.NODE_ENV) {
+  require('dotenv').config({path: `${__dirname}//src//config//.env`})
+}
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -29,7 +31,7 @@ export default defineConfig({
     /* Base URL to use in actions like `await page.goto('/')`. */
     baseURL:
       "https://ecommerce-playground.lambdatest.io/index.php?route=common/home",
-    headless: false,
+    headless: true,
     launchOptions: {
       slowMo: 1000,
       args: ["--start-maximized"],
