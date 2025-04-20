@@ -56,7 +56,8 @@ export default class RegistrationAccountPage {
       //click register link
       await this.clickRegisterLinkInputSelector.click();
     } catch (error) {
-      let registerLink: string | null = await this.clickRegisterLinkInputSelector.textContent();
+      let registerLink: string | null =
+        await this.clickRegisterLinkInputSelector.textContent();
       console.error(`Error while clicking ${registerLink} link: ${error}`);
       throw error;
     }
@@ -98,5 +99,32 @@ export default class RegistrationAccountPage {
     await this.confirmInputSelector.fill(password);
   }
 
-  
+  /**Accept Private Policy */
+  async checkPrivatePolicy(): Promise<void> {
+    try {
+      await this.privacyPolicyInputSelector.check();
+    } catch (error) {
+      console.error(`Error while checking private policy: ${error}`);
+      throw error;
+    }
+  }
+
+  /**
+   * Click continue button
+   */
+  async clickContinueBtn(): Promise<void> {
+    try {
+      await this.continueButtonInputSelector.click();
+    } catch (error) {
+      console.error(`Error while clicking continue button: ${error}`);
+      throw error;
+    }
+  }
+
+  /**
+   * Verify Registration Account is created successfully
+   */
+  async verifySuccessMessage(): Promise<void> {
+    await expect(this.successMessageInputSelector).toBeVisible();
+  }
 }
