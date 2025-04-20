@@ -39,5 +39,15 @@ export default class RegistrationAccountPage {
       "//h1[contains(text(), 'Your Account Has Been Created!')]"
     );
   }
-
+  /**hover over My account dropdown menu */
+  async hoverMyAccount() {
+    try {
+      await this.hoverMyAccountDropdownMenuSelector.hover();
+    } catch (error) {
+      console.error(
+        `Error while hovering over My account dropdown menu: ${error}`
+      );
+      throw error;
+    }
+  }
 }
