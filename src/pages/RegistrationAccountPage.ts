@@ -71,5 +71,32 @@ export default class RegistrationAccountPage {
   generateRandomPassword(): string {
     return Math.trunc(Math.random() * 1000000).toString();
   }
+
+  /**Fill in Registration Account Form */
+  async fillInRegistrationForm(regData: typeof RegistrationAccountData) {
+    if (regData.registration === 0) {
+      throw new Error(`Registration Account File is empty`);
+    }
+    //get current object
+    const registrationInfo = regData.registration[0];
+    //save current password
+    let password: string = this.generateRandomPassword();
+    let emailAddress: string = this.createEmail();
+
+    //log email and password, for tracking purposes
+    console.log(`Current email email: ${emailAddress}`);
+    console.log(`Current user password: ${password}`);
+
+    await this.firstNameInputSelector.fill(registrationInfo.firstname);
+    await this.lastnameInputSelector.fill(registrationInfo.lastname);
+    await this.emailInputSelector.fill(emailAddress);
+
+    await this.telephoneInputSelector.fill(registrationInfo.telephone);
+    //enter password
+    await this.passwordInputSelector.fill(password);
+
+    await this.confirmInputSelector.fill(password);
+  }
+
   
 }
