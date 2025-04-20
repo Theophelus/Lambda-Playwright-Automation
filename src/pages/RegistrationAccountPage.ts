@@ -1,5 +1,4 @@
 import { expect, Locator, Page } from "@playwright/test";
-import { error } from "console";
 const RegistrationAccountData = require("../data/registrationAccountData.json");
 
 export default class RegistrationAccountPage {
@@ -40,7 +39,7 @@ export default class RegistrationAccountPage {
     );
   }
   /**hover over My account dropdown menu */
-  async hoverMyAccount() {
+  async hoverMyAccount(): Promise<void> {
     try {
       await this.hoverMyAccountDropdownMenuSelector.hover();
     } catch (error) {
@@ -50,4 +49,18 @@ export default class RegistrationAccountPage {
       throw error;
     }
   }
+
+  //**click Register Link from My account dropdown menu */
+  async clickRegisterLink(): Promise<void> {
+    try {
+      //click register link
+      await this.clickRegisterLinkInputSelector.click();
+    } catch (error) {
+      let registerLink: string | null = await this.clickRegisterLinkInputSelector.textContent();
+      console.error(`Error while clicking ${registerLink} link: ${error}`);
+      throw error;
+    }
+  }
+
+  
 }
