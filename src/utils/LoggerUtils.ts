@@ -20,3 +20,23 @@ const customFormat = winston.format.printf(({ level, message, timestamp }) => {
   }
   return `${timestamp} [${chalkColorPalletteLevel}]: ${message}`;
 });
+
+//create logger
+const logger = winston.createLogger({
+  format: winston.format.combine(winston.format.timestamp(), customFormat),
+  //write logs
+  transports: [
+    new winston.transports.Console({ level: "debug" }),
+    new winston.transports.File({
+      filename: path.join(logginDir, "execution_run.log"),
+      level: "info",
+    }),
+    new winston.transports.File({
+      filename: path.join(logginDir, "error.log"),
+      level: "error",
+    }),
+  ],
+});
+
+//export logger
+export default logger;
