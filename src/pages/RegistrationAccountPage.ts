@@ -88,10 +88,6 @@ export default class RegistrationAccountPage {
     let password: string = this.generateRandomPassword();
     let emailAddress: string = this.createEmail();
 
-    //log email and password, for tracking purposes
-    console.log(`Current email email: ${emailAddress}`);
-    console.log(`Current user password: ${password}`);
-
     await this.firstNameInputSelector.fill(registrationInfo.firstname);
     await this.lastnameInputSelector.fill(registrationInfo.lastname);
     await this.emailInputSelector.fill(emailAddress);
