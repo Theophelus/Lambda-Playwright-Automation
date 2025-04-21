@@ -33,7 +33,7 @@ export default defineConfig({
       "https://ecommerce-playground.lambdatest.io/index.php?route=common/home",
     headless: true,
     launchOptions: {
-      slowMo: 1000,
+      // slowMo: 1000,
       args: ["--start-maximized"],
     },
     viewport: null,

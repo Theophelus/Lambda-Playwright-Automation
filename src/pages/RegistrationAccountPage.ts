@@ -1,5 +1,6 @@
 import { expect, Locator, Page } from "@playwright/test";
 import logger from "../utils/LoggerUtils";
+import { error, log } from "console";
 const RegistrationAccountData = require("../data/registrationAccountData.json");
 
 export default class RegistrationAccountPage {
@@ -43,7 +44,7 @@ export default class RegistrationAccountPage {
   async hoverMyAccount(): Promise<void> {
     try {
       await this.hoverMyAccountDropdownMenuSelector.hover();
-      logger.info("successfully hovered over 'My account' dropdown menu");
+      logger.info("successfully hovered over 'My account' dropdown menu.");
     } catch (error) {
       logger.error(
         `Error while hovering over My account dropdown menu: ${error}`
@@ -57,10 +58,11 @@ export default class RegistrationAccountPage {
     try {
       //click register link
       await this.clickRegisterLinkInputSelector.click();
+      logger.info("clicking 'Register' link from 'My account' dropdown menu.");
     } catch (error) {
       let registerLink: string | null =
         await this.clickRegisterLinkInputSelector.textContent();
-      console.error(`Error while clicking ${registerLink} link: ${error}`);
+      logger.error(`Error while clicking ${registerLink} link: ${error}`);
       throw error;
     }
   }
@@ -99,14 +101,16 @@ export default class RegistrationAccountPage {
     await this.passwordInputSelector.fill(password);
 
     await this.confirmInputSelector.fill(password);
+    logger.info("Registration Account Form is Filled successfully.");
   }
 
   /**Accept Private Policy */
   async checkPrivatePolicy(): Promise<void> {
     try {
       await this.privacyPolicyInputSelector.check();
+      logger.info("'Private Policy' checkbox is checked successfully.");
     } catch (error) {
-      console.error(`Error while checking private policy: ${error}`);
+      logger.error(`Error while checking private policy: ${error}`);
       throw error;
     }
   }
@@ -117,8 +121,9 @@ export default class RegistrationAccountPage {
   async clickContinueBtn(): Promise<void> {
     try {
       await this.continueButtonInputSelector.click();
+      logger.info("'Continue' button is clicked.");
     } catch (error) {
-      console.error(`Error while clicking continue button: ${error}`);
+      logger.error(`Error while clicking continue button: ${error}`);
       throw error;
     }
   }
@@ -127,6 +132,14 @@ export default class RegistrationAccountPage {
    * Verify Registration Account is created successfully
    */
   async verifySuccessMessage(): Promise<void> {
-    await expect(this.successMessageInputSelector).toBeVisible();
+    try {
+      await expect(this.successMessageInputSelector).toBeVisible({timeout: 2000,});
+      logger.info(`Your Account Has Been Created: message is displayed`);
+    } catch (error) {
+      logger.error(
+        `Your Account Has Been Created: message is not displayed!: ${error}`
+      );
+      throw error;
+    }
   }
 }
