@@ -1,4 +1,5 @@
 import { expect, Locator, Page } from "@playwright/test";
+import logger from "../utils/LoggerUtils";
 const RegistrationAccountData = require("../data/registrationAccountData.json");
 
 export default class RegistrationAccountPage {
@@ -42,8 +43,9 @@ export default class RegistrationAccountPage {
   async hoverMyAccount(): Promise<void> {
     try {
       await this.hoverMyAccountDropdownMenuSelector.hover();
+      logger.info("successfully hovered over 'My account' dropdown menu");
     } catch (error) {
-      console.error(
+      logger.error(
         `Error while hovering over My account dropdown menu: ${error}`
       );
       throw error;
