@@ -1,6 +1,2 @@
-2025-04-21T12:35:56.161Z [[32minfo[39m]: Navigate to https://ecommerce-playground.lambdatest.io/index.php?route=common/home
-2025-04-21T12:35:56.164Z [[32minfo[39m]: email address env: 875355@gmail.com
-2025-04-21T12:35:56.164Z [[32minfo[39m]: password env: 447985
-2025-04-21T12:35:57.265Z [[32minfo[39m]: successfully hovered over 'My account' dropdown menu
-2025-04-21T12:38:14.635Z [[32minfo[39m]: Navigate to: https://ecommerce-playground.lambdatest.io/index.php?route=common/home lanidng page
-2025-04-21T12:38:15.788Z [[32minfo[39m]: successfully hovered over 'My account' dropdown menu
+2025-04-21 14:51:18 [[32minfo[39m]: Navigate to: https://ecommerce-playground.lambdatest.io/index.php?route=common/home lanidng page
+2025-04-21 14:51:19 [[32minfo[39m]: successfully hovered over 'My account' dropdown menu

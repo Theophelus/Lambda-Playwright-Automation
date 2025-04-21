@@ -1,5 +1,4 @@
 import winston from "winston";
-import moment from "moment-timezone";
 import chalk from "chalk";
 import path from "path";
 
@@ -23,7 +22,10 @@ const customFormat = winston.format.printf(({ level, message, timestamp }) => {
 
 //create logger
 const logger = winston.createLogger({
-  format: winston.format.combine(winston.format.timestamp(), customFormat),
+  format: winston.format.combine(
+    winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
+    customFormat
+  ),
   //write logs
   transports: [
     new winston.transports.Console({ level: "debug" }),
