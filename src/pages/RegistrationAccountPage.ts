@@ -19,7 +19,6 @@ export default class RegistrationAccountPage {
   constructor(private page: Page) {
     this.page = page;
     this.hoverMyAccountDropdownMenuSelector = this.page.locator(
-      // "//a[@class='icon-left both nav-link dropdown-toggle']//i/..//span"
       "//a[@class='icon-left both nav-link dropdown-toggle']//span[contains(text(), 'My account')]"
     );
     this.clickRegisterLinkInputSelector = this.page.locator(
@@ -86,24 +85,28 @@ export default class RegistrationAccountPage {
     }
     //get current object
     const registrationInfo = regData.registration[0];
-    //save current password
+    //save current password and email
     let password: string = this.generateRandomPassword();
     let emailAddress: string = this.createEmail();
 
-    await this.firstNameInputSelector.fill(registrationInfo.firstname);
-    await this.lastnameInputSelector.fill(registrationInfo.lastname);
-    await this.emailInputSelector.fill(emailAddress);
+    //fill form
+    try {
+      await this.firstNameInputSelector.fill(registrationInfo.firstname);
+      await this.lastnameInputSelector.fill(registrationInfo.lastname);
+      await this.emailInputSelector.fill(emailAddress);
 
-    await this.telephoneInputSelector.fill(registrationInfo.telephone);
-    //enter password
-    await this.passwordInputSelector.fill(password);
-
-    await this.confirmInputSelector.fill(password);
-    logger.info("Registration Account Form is Filled successfully.");
+      await this.telephoneInputSelector.fill(registrationInfo.telephone);
+      //enter password and confirm password
+      await this.passwordInputSelector.fill(password);
+      await this.confirmInputSelector.fill(password);
+      logger.info("Registration Account Form is Filled successfully.");
+    } catch (error) {
+      logger.error(`Something went wrong while filling the form.: ${error}`);
+      throw error;
+    }
 
     //save new credentials
     const credentials: Map<string, string> = new Map<string, string>();
-
     credentials.set("email_address", emailAddress);
     credentials.set("password", password);
     saveCreds(credentials);
