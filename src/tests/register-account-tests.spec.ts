@@ -18,8 +18,11 @@ test("Users should be able to register to Lambda Play pen", async ({
 
   // Fill the form
   await registrationAccountPage.fillInRegistrationForm(registrationAccountData);
+
+  //accepting Private policy and clicking continue button
+  await registrationAccountPage.checkPrivatePolicy();
   await registrationAccountPage.clickContinueBtn();
-  
+
   //assertions
   await registrationAccountPage.verifySuccessMessage();
 });
