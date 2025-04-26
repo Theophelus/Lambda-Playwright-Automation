@@ -25,9 +25,13 @@ export default class LoginPage {
    * Verify Returning Customer header
    */
   async verifyReturnCustomerText(): Promise<void> {
-    await expect(this.returningCustomerTextSelector).toBeVisible({
-      timeout: 2000,
-    });
+    try {
+      await expect(this.returningCustomerTextSelector).toBeVisible();
+      logger.info('"Returning Customer" header verified successfully.');
+    } catch (error) {
+      logger.error(`Unable to verify: "Returning Customer" header.: ${error}`);
+      throw error;
+    }
   }
   /**
    * Fill in the login form with email and password
@@ -36,7 +40,6 @@ export default class LoginPage {
   async fillInLoginForm(): Promise<void> {
     const user_email_address: string = process.env.email_address || "";
     const user_password: string = process.env.password || "";
-
     // fill user_email_address
     await this.typeRequireValues(user_email_address,this.emailAddressInputSelector);
     //fill user_password
@@ -51,13 +54,26 @@ export default class LoginPage {
       let getCurrentValue = await locator.getAttribute("value");
 
       if (getCurrentValue !== null) {
-        await locator.clear();
+        await locator.press("Control+A");
+        await locator.fill("");
       }
 
       await locator.fill(element);
       logger.info("Input field filled successfully:");
     } catch (error) {
       logger.error(`Input fiald not filled successfully: ${error}`);
+      throw error;
+    }
+  }
+
+  async clickLoginBtn(): Promise<void> {
+    try {
+      await this.loginButtonSelector.click();
+      logger.info("'Login' button is clicked.");
+    } catch (error) {
+      logger.error(
+        `Something went wrong while clicking 'Login button': ${error}`
+      );
       throw error;
     }
   }
