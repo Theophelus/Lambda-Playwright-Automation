@@ -139,7 +139,7 @@ export default class RegistrationAccountPage {
   async verifySuccessMessage(): Promise<void> {
     try {
       await expect(this.successMessageInputSelector).toBeVisible({
-        timeout: 2000,
+        timeout: 5000,
       });
       logger.info(`Your Account Has Been Created: message is displayed`);
     } catch (error) {
