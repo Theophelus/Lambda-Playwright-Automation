@@ -17,7 +17,6 @@ function saveCreds(map: Map<string, string>): void {
     let updateEnvValues = readEnvFile.map((line) => {
       //split and get each key
       const [key] = line.split("=");
-      logger.info(`.envi key values: ${key}`);
       //update the value if the key exists in the mpa
       if (map.has(key.trim())) {
         return `${key.trim()}=${map.get(key.trim())}`;
@@ -31,8 +30,6 @@ function saveCreds(map: Map<string, string>): void {
     fs.writeFileSync(file_path, updateEnvValues.join("\n"), {
       encoding: "utf8",
     });
-
-    logger.info(readEnvFile);
   } catch (error) {
     logger.error(`Error while updating the .env file: ${error}`);
     throw error;
