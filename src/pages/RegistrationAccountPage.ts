@@ -1,7 +1,7 @@
 import { expect, Locator, Page } from "@playwright/test";
 import logger from "../utils/LoggerUtils";
-import { error, log } from "console";
 const RegistrationAccountData = require("../data/registrationAccountData.json");
+import saveCreds from "../utils/SaveCredsUtils";
 
 export default class RegistrationAccountPage {
   private readonly hoverMyAccountDropdownMenuSelector: Locator;
@@ -19,6 +19,7 @@ export default class RegistrationAccountPage {
   constructor(private page: Page) {
     this.page = page;
     this.hoverMyAccountDropdownMenuSelector = this.page.locator(
+      // "//a[@class='icon-left both nav-link dropdown-toggle']//i/..//span"
       "//a[@class='icon-left both nav-link dropdown-toggle']//span[contains(text(), 'My account')]"
     );
     this.clickRegisterLinkInputSelector = this.page.locator(
@@ -40,6 +41,7 @@ export default class RegistrationAccountPage {
       "//h1[contains(text(), 'Your Account Has Been Created!')]"
     );
   }
+
   /**hover over My account dropdown menu */
   async hoverMyAccount(): Promise<void> {
     try {
@@ -54,7 +56,7 @@ export default class RegistrationAccountPage {
   }
 
   //**click Register Link from My account dropdown menu */
-  async clickRegisterLink(): Promise<void> {
+  async clickMyAccountLinks(): Promise<void> {
     try {
       //click register link
       await this.clickRegisterLinkInputSelector.click();
@@ -79,7 +81,7 @@ export default class RegistrationAccountPage {
 
   /**Fill in Registration Account Form */
   async fillInRegistrationForm(regData: typeof RegistrationAccountData) {
-    if (regData.registration === 0) {
+    if (regData.registration.length === 0) {
       throw new Error(`Registration Account File is empty`);
     }
     //get current object
@@ -98,6 +100,13 @@ export default class RegistrationAccountPage {
 
     await this.confirmInputSelector.fill(password);
     logger.info("Registration Account Form is Filled successfully.");
+
+    //save new credentials
+    const credentials: Map<string, string> = new Map<string, string>();
+
+    credentials.set("email_address", emailAddress);
+    credentials.set("password", password);
+    saveCreds(credentials);
   }
 
   /**Accept Private Policy */
@@ -129,7 +138,9 @@ export default class RegistrationAccountPage {
    */
   async verifySuccessMessage(): Promise<void> {
     try {
-      await expect(this.successMessageInputSelector).toBeVisible({timeout: 2000,});
+      await expect(this.successMessageInputSelector).toBeVisible({
+        timeout: 2000,
+      });
       logger.info(`Your Account Has Been Created: message is displayed`);
     } catch (error) {
       logger.error(
