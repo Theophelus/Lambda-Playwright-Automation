@@ -20,7 +20,7 @@ test("Users should be able to register to Lambda Play pen", async ({
   // Initiator
   await homePage.navigate();
   await registrationAccountPage.hoverMyAccount();
-  await registrationAccountPage.clickMyAccountLinks();
+  await registrationAccountPage.clickRegisterAccountLinks();
 
   //verify if landed on the correct page
   await registrationAccountPage.verifyPageTitle("Register Account");

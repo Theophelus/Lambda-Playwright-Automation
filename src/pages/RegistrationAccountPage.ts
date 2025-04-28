@@ -5,8 +5,6 @@ import saveCreds from "../utils/SaveCredsUtils";
 import { HeaderComponents } from "../components/HeaderComponents";
 
 export class RegistrationAccountPage {
-  private readonly hoverMyAccountDropdownMenuSelector: Locator;
-  // private readonly clickRegisterLinkInputSelector: Locator;
   private readonly firstNameInputSelector: Locator;
   private readonly lastnameInputSelector: Locator;
   private readonly emailInputSelector: Locator;
@@ -21,10 +19,6 @@ export class RegistrationAccountPage {
   constructor(private page: Page) {
     this.page = page;
     this.headerComponent = new HeaderComponents(this.page);
-    this.hoverMyAccountDropdownMenuSelector = this.page.locator(
-      "//a[@class='icon-left both nav-link dropdown-toggle']//span[contains(text(), 'My account')]"
-    );
-
     this.firstNameInputSelector = this.page.locator("#input-firstname");
     this.lastnameInputSelector = this.page.locator("#input-lastname");
     this.emailInputSelector = this.page.locator("#input-email");
