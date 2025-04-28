@@ -1,10 +1,11 @@
-import { test, expect } from "@playwright/test";
-import RegistrationAccountPage from "../pages/RegistrationAccountPage";
+import { test, expect } from "../fixtures/PageFixture";
 import logger from "../utils/LoggerUtils";
 
 const registrationAccountData = require("../data/registrationAccountData.json");
 
-test("Users should be able to register to Lambda Play pen", async ({ page }) => {
+test("Users should be able to register to Lambda Play pen", async ({
+  registrationAccountPage,
+}) => {
   //check reg state is created already
   let registration_already_ran: boolean;
   registration_already_ran = process.env.registration_test_completed === "true";
@@ -14,14 +15,13 @@ test("Users should be able to register to Lambda Play pen", async ({ page }) => 
     test.skip(true, "Registration already completed.");
   }
 
-  const registrationAccountPage = new RegistrationAccountPage(page);
   // Initiator
-  await page.goto("/", { waitUntil: "domcontentloaded" });
+  await registrationAccountPage.navigate();
   await registrationAccountPage.hoverMyAccount();
   await registrationAccountPage.clickMyAccountLinks();
 
   //verify if landed on the correct page
-  await expect(page).toHaveTitle("Register Account");
+  await registrationAccountPage.verifyPageTitle("Register Account");
 
   // Fill the form
   await registrationAccountPage.fillInRegistrationForm(registrationAccountData);
