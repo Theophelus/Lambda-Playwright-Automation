@@ -1,4 +1,17 @@
-import { test } from "@playwright/test";
-import LoginPage from "../pages/LoginPage";
+import { test, expect } from "../fixtures/PageFixture";
 
+test("Login in into Lambda Ecommerce Play Pen as a Registered Customer", async ({homePage, loginPage,}) => {
+  //initiator
+  await homePage.navigate();
+  await loginPage.hoverMyAccount();
 
+  //action
+  await loginPage.clickLoginAccountLink();
+
+  //fill form
+  await loginPage.fillInLoginForm();
+  await loginPage.clickLoginBtn();
+
+  //assertion
+  await loginPage.verifyReturnCustomerText();
+});
