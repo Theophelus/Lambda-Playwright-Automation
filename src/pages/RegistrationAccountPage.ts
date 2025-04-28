@@ -3,7 +3,7 @@ import logger from "../utils/LoggerUtils";
 const RegistrationAccountData = require("../data/registrationAccountData.json");
 import saveCreds from "../utils/SaveCredsUtils";
 
-export default class RegistrationAccountPage {
+export class RegistrationAccountPage {
   private readonly hoverMyAccountDropdownMenuSelector: Locator;
   private readonly clickRegisterLinkInputSelector: Locator;
   private readonly firstNameInputSelector: Locator;
@@ -41,14 +41,29 @@ export default class RegistrationAccountPage {
     );
   }
 
+  /**
+   * Navigate to home page
+   */
+
+  async navigate(): Promise<void> {
+    try {
+      await this.page.goto("/", { waitUntil: "domcontentloaded" });
+      logger.info("✅ Navigating to the home page");
+    } catch (error) {
+      logger.error(
+        `❌ Something went wrong navigate to: ${"https://ecommerce-playground.lambdatest.io/index.php?route=common/home"}: ${error} `
+      );
+    }
+  }
+
   /**hover over My account dropdown menu */
   async hoverMyAccount(): Promise<void> {
     try {
       await this.hoverMyAccountDropdownMenuSelector.hover();
-      logger.info("successfully hovered over 'My account' dropdown menu.");
+      logger.info("✅ successfully hovered over 'My account' dropdown menu.");
     } catch (error) {
       logger.error(
-        `Error while hovering over My account dropdown menu: ${error}`
+        `❌ Error while hovering over My account dropdown menu: ${error}`
       );
       throw error;
     }
@@ -59,11 +74,13 @@ export default class RegistrationAccountPage {
     try {
       //click register link
       await this.clickRegisterLinkInputSelector.click();
-      logger.info("clicking 'Register' link from 'My account' dropdown menu.");
+      logger.info(
+        "✅ clicking 'Register' link from 'My account' dropdown menu."
+      );
     } catch (error) {
       let registerLink: string | null =
         await this.clickRegisterLinkInputSelector.textContent();
-      logger.error(`Error while clicking ${registerLink} link: ${error}`);
+      logger.error(`❌ Error while clicking ${registerLink} link: ${error}`);
       throw error;
     }
   }
@@ -81,7 +98,7 @@ export default class RegistrationAccountPage {
   /**Fill in Registration Account Form */
   async fillInRegistrationForm(regData: typeof RegistrationAccountData) {
     if (regData.registration.length === 0) {
-      throw new Error(`Registration Account File is empty`);
+      throw new Error(`✅ Registration Account File is empty`);
     }
     //get current object
     const registrationInfo = regData.registration[0];
@@ -99,9 +116,9 @@ export default class RegistrationAccountPage {
       //enter password and confirm password
       await this.passwordInputSelector.fill(password);
       await this.confirmInputSelector.fill(password);
-      logger.info("Registration Account Form is Filled successfully.");
+      logger.info("✅ Registration Account Form is Filled successfully.");
     } catch (error) {
-      logger.error(`Something went wrong while filling the form.: ${error}`);
+      logger.error(`❌ Something went wrong while filling the form.: ${error}`);
       throw error;
     }
 
@@ -116,9 +133,9 @@ export default class RegistrationAccountPage {
   async checkPrivatePolicy(): Promise<void> {
     try {
       await this.privacyPolicyInputSelector.check();
-      logger.info("'Private Policy' checkbox is checked successfully.");
+      logger.info("✅ 'Private Policy' checkbox is checked successfully.");
     } catch (error) {
-      logger.error(`Error while checking private policy: ${error}`);
+      logger.error(`❌ Error while checking private policy: ${error}`);
       throw error;
     }
   }
@@ -129,9 +146,9 @@ export default class RegistrationAccountPage {
   async clickContinueBtn(): Promise<void> {
     try {
       await this.continueButtonInputSelector.click();
-      logger.info("'Continue' button is clicked.");
+      logger.info("✅ 'Continue' button is clicked.");
     } catch (error) {
-      logger.error(`Error while clicking continue button: ${error}`);
+      logger.error(`❌ Error while clicking continue button: ${error}`);
       throw error;
     }
   }
@@ -144,11 +161,24 @@ export default class RegistrationAccountPage {
       await expect(this.successMessageInputSelector).toBeVisible({
         timeout: 5000,
       });
-      logger.info(`Your Account Has Been Created: message is displayed`);
+      logger.info(`✅ Your Account Has Been Created: message is displayed`);
     } catch (error) {
       logger.error(
-        `Your Account Has Been Created: message is not displayed!: ${error}`
+        `❌ Your Account Has Been Created: message is not displayed!: ${error}`
       );
+      throw error;
+    }
+  }
+  /**
+   * Verify Page title
+   */
+
+  async verifyPageTitle(page_title: string): Promise<void> {
+    try {
+      await expect(this.page).toHaveTitle(page_title);
+      logger.info(`✅ ${page_title}: title is verified:`);
+    } catch (error) {
+      logger.error(`❌ Unable to verify page title: ${error}`);
       throw error;
     }
   }
