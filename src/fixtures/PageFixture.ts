@@ -3,7 +3,6 @@ import { HomePage } from "../pages/HomePage";
 import { RegistrationAccountPage } from "../pages/RegistrationAccountPage";
 import { LoginPage } from "../pages/LoginPage";
 import logger from "../utils/LoggerUtils";
-import { homedir } from "os";
 
 // define fixture type
 type LambdaFixture = {
@@ -47,5 +46,4 @@ export const test = base.extend<LambdaFixture>({
 });
 
 //export expect for assertions, thi will allow to still execute assertions on test level
-
 export { expect } from "@playwright/test";
