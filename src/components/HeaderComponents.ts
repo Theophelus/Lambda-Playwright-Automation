@@ -24,4 +24,28 @@ export class HeaderComponents {
       throw error;
     }
   }
+
+  //**click Register Link from My account dropdown menu */
+  async clickMyAccountLinks(element: string): Promise<void> {
+    try {
+      let selector: string = this.myAccountDropdownLocator(element);
+      this.clickRegisterLinkInputSelector = this.page.locator(selector);
+      //click register link
+      await this.clickRegisterLinkInputSelector.click();
+      logger.info(
+        `✅ clicking ${element} link from 'My account' dropdown menu.`
+      );
+    } catch (error) {
+      let registerLink: string | null =
+        await this.clickRegisterLinkInputSelector.textContent();
+      logger.error(`❌ Error while clicking ${registerLink} link: ${error}`);
+      throw error;
+    }
+  }
+
+  //My account dropdown menu locator
+  myAccountDropdownLocator(element: string): string {
+    return `//a[@href='https://ecommerce-playground.lambdatest.io/index.php?route=account/${element}']`;
+  }
+
 }
