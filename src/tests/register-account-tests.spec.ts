@@ -3,7 +3,7 @@ import logger from "../utils/LoggerUtils";
 
 const registrationAccountData = require("../data/registrationAccountData.json");
 
-test("Users should be able to register to Lambda Play pen", async ({
+test("Users should be able to register to Lambda Play pen", async ({homePage,
   registrationAccountPage,
 }) => {
   //check reg state is created already
@@ -16,7 +16,7 @@ test("Users should be able to register to Lambda Play pen", async ({
   }
 
   // Initiator
-  await registrationAccountPage.navigate();
+  await homePage.navigate();
   await registrationAccountPage.hoverMyAccount();
   await registrationAccountPage.clickMyAccountLinks();
 

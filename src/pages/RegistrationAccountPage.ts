@@ -41,20 +41,6 @@ export class RegistrationAccountPage {
     );
   }
 
-  /**
-   * Navigate to home page
-   */
-
-  async navigate(): Promise<void> {
-    try {
-      await this.page.goto("/", { waitUntil: "domcontentloaded" });
-      logger.info("✅ Navigating to the home page");
-    } catch (error) {
-      logger.error(
-        `❌ Something went wrong navigate to: ${"https://ecommerce-playground.lambdatest.io/index.php?route=common/home"}: ${error} `
-      );
-    }
-  }
 
   /**hover over My account dropdown menu */
   async hoverMyAccount(): Promise<void> {
