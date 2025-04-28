@@ -1,7 +1,7 @@
 import { expect, Locator, Page } from "@playwright/test";
 import logger from "../utils/LoggerUtils";
 
-export default class LoginPage {
+export class LoginPage {
   //define locators
   private readonly emailAddressInputSelector;
   private readonly passwordInputSelector;
@@ -27,9 +27,9 @@ export default class LoginPage {
   async verifyReturnCustomerText(): Promise<void> {
     try {
       await expect(this.returningCustomerTextSelector).toBeVisible();
-      logger.info('"Returning Customer" header verified successfully.');
+      logger.info('✅ "Returning Customer" header verified successfully.');
     } catch (error) {
-      logger.error(`Unable to verify: "Returning Customer" header.: ${error}`);
+      logger.error(`❌ Unable to verify: "Returning Customer" header.: ${error}`);
       throw error;
     }
   }
@@ -41,7 +41,7 @@ export default class LoginPage {
     const user_email_address: string = process.env.email_address || "";
     const user_password: string = process.env.password || "";
     // fill user_email_address
-    await this.typeRequireValues(user_email_address,this.emailAddressInputSelector);
+    await this.typeRequireValues(user_email_address, this.emailAddressInputSelector);
     //fill user_password
     await this.typeRequireValues(user_password, this.passwordInputSelector);
   }
@@ -59,9 +59,9 @@ export default class LoginPage {
       }
 
       await locator.fill(element);
-      logger.info("Input field filled successfully:");
+      logger.info("✅ Input field filled successfully:");
     } catch (error) {
-      logger.error(`Input fiald not filled successfully: ${error}`);
+      logger.error(`❌ Input fiald not filled successfully: ${error}`);
       throw error;
     }
   }
@@ -69,10 +69,10 @@ export default class LoginPage {
   async clickLoginBtn(): Promise<void> {
     try {
       await this.loginButtonSelector.click();
-      logger.info("'Login' button is clicked.");
+      logger.info("✅ 'Login' button is clicked.");
     } catch (error) {
       logger.error(
-        `Something went wrong while clicking 'Login button': ${error}`
+        `❌ Something went wrong while clicking 'Login button': ${error}`
       );
       throw error;
     }
