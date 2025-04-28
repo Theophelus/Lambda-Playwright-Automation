@@ -2,10 +2,11 @@ import { expect, Locator, Page } from "@playwright/test";
 import logger from "../utils/LoggerUtils";
 const RegistrationAccountData = require("../data/registrationAccountData.json");
 import saveCreds from "../utils/SaveCredsUtils";
+import { HeaderComponents } from "../components/HeaderComponents";
 
 export class RegistrationAccountPage {
   private readonly hoverMyAccountDropdownMenuSelector: Locator;
-  private readonly clickRegisterLinkInputSelector: Locator;
+  // private readonly clickRegisterLinkInputSelector: Locator;
   private readonly firstNameInputSelector: Locator;
   private readonly lastnameInputSelector: Locator;
   private readonly emailInputSelector: Locator;
@@ -15,15 +16,15 @@ export class RegistrationAccountPage {
   private readonly privacyPolicyInputSelector: Locator;
   private readonly continueButtonInputSelector: Locator;
   private readonly successMessageInputSelector: Locator;
+  private readonly headerComponent: HeaderComponents;
 
   constructor(private page: Page) {
     this.page = page;
+    this.headerComponent = new HeaderComponents(this.page);
     this.hoverMyAccountDropdownMenuSelector = this.page.locator(
       "//a[@class='icon-left both nav-link dropdown-toggle']//span[contains(text(), 'My account')]"
     );
-    this.clickRegisterLinkInputSelector = this.page.locator(
-      "//a[@href='https://ecommerce-playground.lambdatest.io/index.php?route=account/register']"
-    );
+
     this.firstNameInputSelector = this.page.locator("#input-firstname");
     this.lastnameInputSelector = this.page.locator("#input-lastname");
     this.emailInputSelector = this.page.locator("#input-email");
@@ -41,34 +42,14 @@ export class RegistrationAccountPage {
     );
   }
 
-
   /**hover over My account dropdown menu */
   async hoverMyAccount(): Promise<void> {
-    try {
-      await this.hoverMyAccountDropdownMenuSelector.hover();
-      logger.info("✅ successfully hovered over 'My account' dropdown menu.");
-    } catch (error) {
-      logger.error(
-        `❌ Error while hovering over My account dropdown menu: ${error}`
-      );
-      throw error;
-    }
+    await this.headerComponent.hoverMyAccount();
   }
 
   //**click Register Link from My account dropdown menu */
-  async clickMyAccountLinks(): Promise<void> {
-    try {
-      //click register link
-      await this.clickRegisterLinkInputSelector.click();
-      logger.info(
-        "✅ clicking 'Register' link from 'My account' dropdown menu."
-      );
-    } catch (error) {
-      let registerLink: string | null =
-        await this.clickRegisterLinkInputSelector.textContent();
-      logger.error(`❌ Error while clicking ${registerLink} link: ${error}`);
-      throw error;
-    }
+  async clickRegisterAccountLinks(): Promise<void> {
+    await this.headerComponent.clickMyAccountLinks("register");
   }
 
   /** generate random email */
