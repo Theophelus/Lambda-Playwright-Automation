@@ -1,6 +1,7 @@
 import { expect, Locator, Page } from "@playwright/test";
 import logger from "../utils/LoggerUtils";
 import { HeaderComponents } from "../components/HeaderComponents";
+import { AccountPage } from "../pages/AccountPage";
 export class LoginPage {
   //define locators
   private readonly emailAddressInputSelector;
@@ -88,7 +89,7 @@ export class LoginPage {
     }
   }
 
-  async clickLoginBtn(): Promise<void> {
+  async clickLoginBtn(): Promise<AccountPage> {
     try {
       await this.loginButtonSelector.click();
       logger.info("✅ 'Login' button is clicked.");
@@ -98,5 +99,9 @@ export class LoginPage {
       );
       throw error;
     }
+
+    const accountPage: AccountPage = new AccountPage(this.page);
+
+    return accountPage;
   }
 }
