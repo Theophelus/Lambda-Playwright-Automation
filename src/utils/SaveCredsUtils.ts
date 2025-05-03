@@ -31,7 +31,7 @@ function saveCreds(map: Map<string, string>): void {
       encoding: "utf8",
     });
   } catch (error) {
-    logger.error(`Error while updating the .env file: ${error}`);
+    logger.error(`❌ Error while updating the .env file: ${error}`);
     throw error;
   }
 }

@@ -1,6 +1,10 @@
 import { test, expect } from "../fixtures/PageFixture";
+import { AccountPage } from "../pages/AccountPage";
 
-test("Login in into Lambda Ecommerce Play Pen as a Registered Customer", async ({homePage, loginPage,}) => {
+test("Login in into Lambda Ecommerce Play Pen as a Registered Customer", async ({
+  homePage,
+  loginPage,
+}) => {
   //initiator
   await homePage.navigate();
   await loginPage.hoverMyAccount();
@@ -9,9 +13,11 @@ test("Login in into Lambda Ecommerce Play Pen as a Registered Customer", async (
   await loginPage.clickLoginAccountLink();
 
   //fill form
-  await loginPage.fillInLoginForm();
-  await loginPage.clickLoginBtn();
+  await loginPage.fillInLoginForm()
+
+  //click login button
+  const accountPage = await loginPage.clickLoginBtn();
 
   //assertion
-  await loginPage.verifyReturnCustomerText();
+  await accountPage.expectedMyAccountTitleToBeVisible();
 });
