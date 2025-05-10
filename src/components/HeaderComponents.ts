@@ -63,4 +63,34 @@ export class HeaderComponents {
   myAccountDropdownLocator(element: string): string {
     return `//a[@href='https://ecommerce-playground.lambdatest.io/index.php?route=account/${element}']`;
   }
+
+  /**
+   *
+   * @param expectedElements
+   * @method once logged in verify all links under My account dropdown
+   */
+  async myAccountDropDownLinksAsCustomer(expectedElements: string[]): Promise<void> {
+    //get the list of dropdown with their values
+    const dropdown_values = await this.myAccountLoginSelectors.allInnerTexts();
+
+    //assert to check the length
+    expect(dropdown_values.length).toEqual(expectedElements.length);
+
+    for (let i = 0; i < dropdown_values.length; i++) {
+      const current_elem = dropdown_values[i];
+      const expected = expectedElements[i];
+
+      try {
+        //verify results
+        await expect(current_elem).toBe(expected);
+        logger.info(
+          `✅ My account dropdown Menu at position ${i} as this value ${current_elem} `
+        );
+      } catch (error) {
+        logger.error(
+          `Mismatch at position ${i}: got ${current_elem} but expected ${expected}`
+        );
+      }
+    }
+  }
 }
