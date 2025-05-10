@@ -1,21 +1,37 @@
-import { Locator, Page } from "@playwright/test";
+import { expect, Locator, Page } from "@playwright/test";
 import logger from "../utils/LoggerUtils";
 
 export class HeaderComponents {
   private readonly hoverMyAccountDropdownMenuSelector: Locator;
+  private readonly hoverMyAccountDropdownMenuSelectorActive: Locator;
   private clickRegisterLinkInputSelector: Locator;
+  private myAccountLoginSelectors: Locator;
 
   constructor(private page: Page) {
     this.page = page;
     this.hoverMyAccountDropdownMenuSelector = this.page.locator(
-      "//a[@class='icon-left both nav-link dropdown-toggle']//span[contains(text(), 'My account')]"
+      "//a[@class='icon-left both nav-link dropdown-toggle']",
+      { hasText: "My account" }
+    );
+    this.hoverMyAccountDropdownMenuSelectorActive = this.page.locator(
+      "//a[@class='icon-left both nav-link dropdown-toggle active']",
+      { hasText: "My account" }
+    );
+    this.myAccountLoginSelectors = this.page.locator(
+      "ul.mz-sub-menu-96.dropdown-menu li div span"
     );
   }
 
   /**hover over My account dropdown menu */
   async hoverMyAccount(): Promise<void> {
     try {
-      await this.hoverMyAccountDropdownMenuSelector.hover();
+      const myAccountIsActive =
+        await this.hoverMyAccountDropdownMenuSelectorActive.isVisible();
+
+      myAccountIsActive
+        ? await this.hoverMyAccountDropdownMenuSelectorActive.hover()
+        : await this.hoverMyAccountDropdownMenuSelector.hover();
+
       logger.info("✅ successfully hovered over 'My account' dropdown menu.");
     } catch (error) {
       logger.error(
@@ -47,5 +63,4 @@ export class HeaderComponents {
   myAccountDropdownLocator(element: string): string {
     return `//a[@href='https://ecommerce-playground.lambdatest.io/index.php?route=account/${element}']`;
   }
-
 }
