@@ -2,6 +2,7 @@ import { expect, Locator, Page } from "@playwright/test";
 import logger from "../utils/LoggerUtils";
 import { HeaderComponents } from "../components/HeaderComponents";
 import { AccountPage } from "../pages/AccountPage";
+import { typeRequireText } from "../components/Inputs";
 export class LoginPage {
   //define locators
   private readonly emailAddressInputSelector;
@@ -56,37 +57,13 @@ export class LoginPage {
   /**
    * Fill in the login form with email and password
    */
-
   async fillInLoginForm(): Promise<void> {
     const user_email_address: string = process.env.email_address || "";
     const user_password: string = process.env.password || "";
     // fill user_email_address
-    await this.typeRequireValues(
-      user_email_address,
-      this.emailAddressInputSelector
-    );
+    await typeRequireText(user_email_address, this.emailAddressInputSelector);
     //fill user_password
-    await this.typeRequireValues(user_password, this.passwordInputSelector);
-  }
-
-  /**
-   * type required values, email and password
-   */
-  async typeRequireValues(element: string, locator: Locator): Promise<void> {
-    try {
-      let getCurrentValue = await locator.getAttribute("value");
-
-      if (getCurrentValue !== null) {
-        await locator.press("Control+A");
-        await locator.fill("");
-      }
-
-      await locator.fill(element);
-      logger.info("✅ Input field filled successfully:");
-    } catch (error) {
-      logger.error(`❌ Input fiald not filled successfully: ${error}`);
-      throw error;
-    }
+    await typeRequireText(user_password, this.passwordInputSelector);
   }
 
   async clickLoginBtn(): Promise<AccountPage> {
