@@ -1,9 +1,13 @@
 import { Page } from "@playwright/test";
 import logger from "../utils/LoggerUtils";
+import { HeaderComponents } from "../components/HeaderComponents";
 
 export class HomePage {
+  private readonly headerComponents: HeaderComponents;
+
   constructor(private page: Page) {
     this.page = page;
+    this.headerComponents = new HeaderComponents(page);
   }
 
   /**
@@ -20,5 +24,9 @@ export class HomePage {
       );
       throw error;
     }
+  }
+
+  async verifyMyAccountLinksAfterLogin(expected_results: string[]) {
+    await this.headerComponents.myAccountDropDownLinksAsCustomer(expected_results);
   }
 }
