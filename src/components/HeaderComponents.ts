@@ -74,7 +74,7 @@ export class HeaderComponents {
     const dropdown_values = await this.myAccountLoginSelectors.allInnerTexts();
 
     //assert to check the length
-    expect(dropdown_values.length).toEqual(expectedElements.length);
+    expect.soft(dropdown_values.length).toEqual(expectedElements.length);
 
     for (let i = 0; i < dropdown_values.length; i++) {
       const current_elem = dropdown_values[i];
@@ -82,14 +82,15 @@ export class HeaderComponents {
 
       try {
         //verify results
-        await expect(current_elem).toBe(expected);
+        await expect.soft(current_elem).toBe(expected);
         logger.info(
           `✅ My account dropdown Menu at position ${i} as this value ${current_elem} `
         );
       } catch (error) {
         logger.error(
-          `Mismatch at position ${i}: got ${current_elem} but expected ${expected}`
+          `❌ Mismatch at position ${i}: got ${current_elem} but expected ${expected}`
         );
+        throw error;
       }
     }
   }
