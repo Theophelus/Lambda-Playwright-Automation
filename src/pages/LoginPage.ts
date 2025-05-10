@@ -91,7 +91,7 @@ export class LoginPage {
 
   async clickLoginBtn(): Promise<AccountPage> {
     try {
-      await this.loginButtonSelector.click();
+      await this.loginButtonSelector.click({ timeout: 5000 });
       logger.info("✅ 'Login' button is clicked.");
     } catch (error) {
       logger.error(
