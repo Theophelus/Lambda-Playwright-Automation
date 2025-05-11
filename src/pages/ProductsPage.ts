@@ -81,4 +81,16 @@ export class ProductsPage {
       throw error;
     }
   }
+   /**
+   * @method to click Shop By Category Link from Header
+   */
+  async clickShopByCategoryLink(): Promise<void> {
+    await this.headerComponent.clickShopByCategoryLink();
+  }
+  /**
+   * @method to select a specific category from the list
+   */
+  async selectSpecificCategory(category_name: string): Promise<void> {
+    await clickSpecificCategory(category_name, this.topCategorySelector);
+  }
 }
