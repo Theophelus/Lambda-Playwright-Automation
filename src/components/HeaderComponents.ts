@@ -6,6 +6,7 @@ export class HeaderComponents {
   private readonly hoverMyAccountDropdownMenuSelectorActive: Locator;
   private clickRegisterLinkInputSelector: Locator;
   private myAccountLoginSelectors: Locator;
+  private shopByCategorySelector: Locator;
 
   constructor(private page: Page) {
     this.page = page;
@@ -20,6 +21,7 @@ export class HeaderComponents {
     this.myAccountLoginSelectors = this.page.locator(
       "ul.mz-sub-menu-96.dropdown-menu li div span"
     );
+    this.shopByCategorySelector = this.page.locator("#entry_217832 a");
   }
 
   /**hover over My account dropdown menu */
@@ -69,7 +71,9 @@ export class HeaderComponents {
    * @param expectedElements
    * @method once logged in verify all links under My account dropdown
    */
-  async myAccountDropDownLinksAsCustomer(expectedElements: string[]): Promise<void> {
+  async myAccountDropDownLinksAsCustomer(
+    expectedElements: string[]
+  ): Promise<void> {
     //get the list of dropdown with their values
     const dropdown_values = await this.myAccountLoginSelectors.allInnerTexts();
 
@@ -92,6 +96,24 @@ export class HeaderComponents {
         );
         throw error;
       }
+    }
+  }
+
+  /**
+   * @method to click Shop By Category link
+   *
+   */
+  async clickShopByCategoryLink(): Promise<void> {
+    try {
+      await this.shopByCategorySelector.click();
+      logger.info(
+        `✅ '${await this.shopByCategorySelector.innerText()} is clicked'`
+      );
+    } catch (error) {
+      logger.error(
+        `❌ Error while trying to click: ${await this.shopByCategorySelector.innerText()}: ${error}`
+      );
+      throw error;
     }
   }
 }
