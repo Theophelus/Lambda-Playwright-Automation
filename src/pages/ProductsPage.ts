@@ -44,7 +44,7 @@ export class ProductsPage {
         //click the first product that meets the criteria
         await filtered_product.first().click();
         //implicit wait to allow elements to load
-        await this.page.waitForTimeout(20000);
+        await this.page.waitForTimeout(7000);
         logger.info(`✅ clicking ${product} product from 'Search For Product' textbox.`);
       }
     } catch (error) {
