@@ -6,6 +6,7 @@ export class ProductsPage {
   //define locators
   private readonly searchForProductSelector: Locator;
   private readonly listOfSearchProductSelector: Locator;
+  private readonly productHeaderSelector: Locator;
 
   constructor(private page: Page) {
     this.page = page;
@@ -16,6 +17,7 @@ export class ProductsPage {
     this.listOfSearchProductSelector = this.page.locator(
       "//div//ul[@class='dropdown-menu autocomplete w-100']//li//h4//a"
     );
+    this.productHeaderSelector = this.page.locator("div#entry_216816 h1");
   }
 
   /**
@@ -45,11 +47,20 @@ export class ProductsPage {
         await filtered_product.first().click();
         //implicit wait to allow elements to load
         await this.page.waitForTimeout(7000);
-        logger.info(`✅ clicking ${product} product from 'Search For Product' textbox.`);
+        logger.info(
+          `✅ clicking ${product} product from 'Search For Product' textbox.`
+        );
       }
     } catch (error) {
       logger.error(`❌ Error while trying to click '${product}': ${error}`);
       throw error;
     }
+  }
+  /**
+   * Assert product Header title
+   */
+
+  async assertProductHeaderTitle(): Promise<void> {
+    await expect(this.productHeaderSelector).toBeVisible();
   }
 }
