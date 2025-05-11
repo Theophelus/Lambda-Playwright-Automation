@@ -10,6 +10,7 @@ test.describe("Products pages test cases", () => {
     await homePage.navigate();
 
     //action
+    await loginPage.hoverMyAccount();
     await loginPage.clickLoginAccountLink();
     //fill form
     await loginPage.fillInLoginForm();
@@ -19,8 +20,10 @@ test.describe("Products pages test cases", () => {
     await accountPage.expectedMyAccountTitleToBeVisible();
 
     //navigate to Search For Products textbox and search for a product.
-    productsPage.searchForASpecificProductAndClick("Samsung SyncMaster 941BW");
+    await productsPage.searchForASpecificProductAndClick(
+      "Samsung SyncMaster 941BW"
+    );
     //assertion
-    productsPage.assertProductHeaderTitle();
+    await productsPage.assertProductHeaderTitle();
   });
 });
