@@ -1,15 +1,20 @@
 import { Page, expect, Locator } from "@playwright/test";
 import { typeRequireText } from "../components/Inputs";
 import logger from "../utils/LoggerUtils";
+import { HeaderComponents } from "../components/HeaderComponents";
+import { clickSpecificCategory } from "../components/CategoryComponent";
 
 export class ProductsPage {
   //define locators
   private readonly searchForProductSelector: Locator;
   private readonly listOfSearchProductSelector: Locator;
   private readonly productHeaderSelector: Locator;
+  private readonly topCategorySelector: Locator;
+  private readonly headerComponent: HeaderComponents;
 
   constructor(private page: Page) {
     this.page = page;
+    this.headerComponent = new HeaderComponents(this.page);
     this.searchForProductSelector = this.page.locator(
       `input[data-autocomplete='5'][placeholder='Search For Products']`
     );
@@ -18,6 +23,9 @@ export class ProductsPage {
       "//div//ul[@class='dropdown-menu autocomplete w-100']//li//h4//a"
     );
     this.productHeaderSelector = this.page.locator("div#entry_216816 h1");
+    this.topCategorySelector = this.page.locator(
+      "//ul[@class='navbar-nav vertical']//li//a"
+    );
   }
 
   /**
@@ -46,7 +54,7 @@ export class ProductsPage {
         //click the first product that meets the criteria
         await filtered_product.first().click();
         //implicit wait to allow elements to load
-        await this.page.waitForTimeout(7000);
+        await this.page.waitForTimeout(15000);
         logger.info(
           `✅ clicking ${product} product from 'Search For Product' textbox.`
         );
@@ -61,6 +69,16 @@ export class ProductsPage {
    */
 
   async assertProductHeaderTitle(): Promise<void> {
-    await expect(this.productHeaderSelector).toBeVisible();
+    try {
+      await expect(this.productHeaderSelector).toBeVisible();
+      logger.info(
+        `✅ ${this.productHeaderSelector.innerText()} product header is verified.`
+      );
+    } catch (error) {
+      logger.error(
+        `❌ Error while trying to verify '${this.productHeaderSelector.innerText()} header': ${error}`
+      );
+      throw error;
+    }
   }
 }
