@@ -26,4 +26,30 @@ test.describe("Products pages test cases", () => {
     //assertion
     await productsPage.assertProductHeaderTitle();
   });
+
+  test("Search Products by Category as a return Customer", async ({
+    homePage,
+    loginPage,
+    productsPage,
+  }) => {
+    //navigate
+    await homePage.navigate();
+
+    //action
+    await loginPage.hoverMyAccount();
+    await loginPage.clickLoginAccountLink();
+    //fill form
+    await loginPage.fillInLoginForm();
+    //click login button
+    const accountPage = await loginPage.clickLoginBtn();
+    //assertion
+    await accountPage.expectedMyAccountTitleToBeVisible();
+
+    //click Shop by Category Link
+    await productsPage.clickShopByCategoryLink();
+    //select category from the list
+    await productsPage.selectSpecificCategory(
+      " Laptops & Notebooks"
+    );
+  });
 });
