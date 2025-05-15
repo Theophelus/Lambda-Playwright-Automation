@@ -48,8 +48,9 @@ test.describe("Products pages test cases", () => {
     //click Shop by Category Link
     await productsPage.clickShopByCategoryLink();
     //select category from the list
-    await productsPage.selectSpecificCategory(
-      " Laptops & Notebooks"
-    );
+    await productsPage.selectSpecificCategory(" Laptops & Notebooks");
+
+    //Assert title
+    await productsPage.verifyCategoryTitle();
   });
 });
