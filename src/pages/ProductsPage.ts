@@ -10,6 +10,7 @@ export class ProductsPage {
   private readonly listOfSearchProductSelector: Locator;
   private readonly productHeaderSelector: Locator;
   private readonly topCategorySelector: Locator;
+  private readonly categoryTitleSelector: Locator;
   private readonly headerComponent: HeaderComponents;
 
   constructor(private page: Page) {
@@ -26,6 +27,7 @@ export class ProductsPage {
     this.topCategorySelector = this.page.locator(
       "//ul[@class='navbar-nav vertical']//li//a"
     );
+    this.categoryTitleSelector = this.page.locator("#entry_212392 h1");
   }
 
   /**
@@ -54,7 +56,7 @@ export class ProductsPage {
         //click the first product that meets the criteria
         await filtered_product.first().click();
         //implicit wait to allow elements to load
-        await this.page.waitForTimeout(15000);
+        // await this.page.waitForTimeout(15000);
         logger.info(
           `✅ clicking ${product} product from 'Search For Product' textbox.`
         );
@@ -81,7 +83,7 @@ export class ProductsPage {
       throw error;
     }
   }
-   /**
+  /**
    * @method to click Shop By Category Link from Header
    */
   async clickShopByCategoryLink(): Promise<void> {
@@ -92,5 +94,19 @@ export class ProductsPage {
    */
   async selectSpecificCategory(category_name: string): Promise<void> {
     await clickSpecificCategory(category_name, this.topCategorySelector);
+  }
+  /**
+   * @method to verify category title after filters
+   */
+  async verifyCategoryTitle(): Promise<void> {
+    try {
+      await expect(this.categoryTitleSelector).toBeTruthy();
+      logger.info(
+        `✅ ${await this.categoryTitleSelector.innerText()} Category title is verified`
+      );
+    } catch (error) {
+      logger.error(`❌ Category title could not be verified: ${error}`);
+      throw error;
+    }
   }
 }
