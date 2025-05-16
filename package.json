@@ -2,7 +2,10 @@
   "name": "lambda-playwright-automation",
   "version": "1.0.0",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test:headed": "playwright test --headed",
+    "test:product": "playwright test ./src/tests/products-tests.spec.ts --headed"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -15,6 +18,7 @@
     "chalk": "^5.4.1",
     "dotenv": "^16.5.0",
     "moment-timezone": "^0.5.48",
+    "npm-check-updates": "^18.0.1",
     "winston": "^3.17.0"
   }
 }
