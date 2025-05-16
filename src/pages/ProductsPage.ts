@@ -4,6 +4,7 @@ import logger from "../utils/LoggerUtils";
 import { HeaderComponents } from "../components/HeaderComponents";
 import { clickSpecificCategory } from "../components/CategoryComponent";
 import { error } from "console";
+import { CartPage } from "./CartPage";
 
 export class ProductsPage {
   //define locators
@@ -117,7 +118,7 @@ export class ProductsPage {
   /**
    * @method, define a method that takes one @parameter to add a product to the cart.
    */
-  async addProductToCart(productName: string): Promise<void> {
+  async addProductToCart(productName: string): Promise<CartPage> {
     //define local selectors
     const next_button_selector = this.page.locator(
       '//*[@id="entry_212409"]/div/div[1]/ul/li[6]/a'
@@ -136,21 +137,23 @@ export class ProductsPage {
             is_found = true;
             await current_product.hover();
             logger.info(
-              `Hover over ${await current_product.innerText()} product.`
+              `✅ Hover over ${await current_product.innerText()} product.`
             );
-
+            //wait for elements to load
+            await this.page.waitForTimeout(3000);
             //click cart icon
             const add_to_cart_btn = current_product
-              .locator("..//button[@title='Add to Cart']")
+              .locator("//button[@title='Add to Cart']")
               .first();
-
-            await add_to_cart_btn.hover({ timeout: 4000 });
-            await add_to_cart_btn.dblclick({ timeout: 10000 });
-            logger.info(`${await add_to_cart_btn.innerText()} button is clicked.`);
+              await add_to_cart_btn.hover();
+              await add_to_cart_btn.click({ force: true, timeout: 10000 });
+              logger.info(`✅ Clicked 'Add to Cart' Button for: ${await current_product.innerText()}`);
 
             break;
           } catch (error) {
-            logger.error(`Product ${productName} found but failed to add to the cart: ${error}`);
+            logger.error(
+              `Product ${productName} found but failed to add to the cart: ${error}`
+            );
             throw error;
           }
         }
@@ -170,5 +173,9 @@ export class ProductsPage {
         throw error;
       }
     }
+
+    //implement method chaining
+    const cart_page = new CartPage(this.page);
+    return cart_page;
   }
 }
