@@ -32,6 +32,7 @@ export class CartPage {
    *@member with a @param productName to verify product is added to the cart successfully
    */
   async verifyProductNameInTheCart(productName: string): Promise<void> {
+    await this.page.waitForLoadState("networkidle");
     //get the rows
     const table_rows = this.tableSelector.getByRole("row");
     try {
@@ -39,13 +40,18 @@ export class CartPage {
       const filter_prod_name = table_rows.filter({ hasText: productName });
       //check if product_name is found and assert
       if ((await filter_prod_name.count()) > 0) {
-        await expect(await filter_prod_name).toBeVisible();
+        await expect(await filter_prod_name).toBeVisible({
+          visible: true,
+          timeout: 5000,
+        });
         logger.info(
           `✅ ${productName} is added to the cart successfully verified`
         );
       }
     } catch (error) {
-      logger.info(`❌ ${productName} could not be verified`);
+      logger.error(
+        `❌ ${productName} not found and verified in the cart: ${error}`
+      );
       throw error;
     }
   }
