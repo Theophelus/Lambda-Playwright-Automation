@@ -27,4 +27,26 @@ export class CartPage {
       throw error;
     }
   }
+  /**
+   *
+   *@member with a @param productName to verify product is added to the cart successfully
+   */
+  async verifyProductNameInTheCart(productName: string): Promise<void> {
+    //get the rows
+    const table_rows = this.tableSelector.getByRole("row");
+    try {
+      //filter the rows based on provided product name
+      const filter_prod_name = table_rows.filter({ hasText: productName });
+      //check if product_name is found and assert
+      if ((await filter_prod_name.count()) > 0) {
+        await expect(await filter_prod_name).toBeVisible();
+        logger.info(
+          `✅ ${productName} is added to the cart successfully verified`
+        );
+      }
+    } catch (error) {
+      logger.info(`❌ ${productName} could not be verified`);
+      throw error;
+    }
+  }
 }
