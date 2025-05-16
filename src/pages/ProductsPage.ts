@@ -3,7 +3,7 @@ import { typeRequireText } from "../components/Inputs";
 import logger from "../utils/LoggerUtils";
 import { HeaderComponents } from "../components/HeaderComponents";
 import { clickSpecificCategory } from "../components/CategoryComponent";
-import { add } from "winston";
+import { error } from "console";
 
 export class ProductsPage {
   //define locators
@@ -132,16 +132,27 @@ export class ProductsPage {
       //filter the list and hover over a product before selecting
       for (let current_product of list_of_products) {
         if ((await current_product.innerText()).includes(productName)) {
-          is_found = true;
-          await current_product.hover();
+          try {
+            is_found = true;
+            await current_product.hover();
+            logger.info(
+              `Hover over ${await current_product.innerText()} product.`
+            );
 
-          //click cart icon
-          const add_to_cart_btn = current_product
-            .locator("..//button[@title='Add to Cart']")
-            .first();
-          await add_to_cart_btn.hover({ timeout: 4000 });
-          await add_to_cart_btn.dblclick();
-          break;
+            //click cart icon
+            const add_to_cart_btn = current_product
+              .locator("..//button[@title='Add to Cart']")
+              .first();
+
+            await add_to_cart_btn.hover({ timeout: 4000 });
+            await add_to_cart_btn.dblclick({ timeout: 10000 });
+            logger.info(`${await add_to_cart_btn.innerText()} button is clicked.`);
+
+            break;
+          } catch (error) {
+            logger.error(`Product ${productName} found but failed to add to the cart: ${error}`);
+            throw error;
+          }
         }
       }
 
@@ -152,7 +163,11 @@ export class ProductsPage {
       if ((await next_button_selector.count()) > 0) {
         await next_button_selector.click();
         //refresh product list
+        await this.page.waitForLoadState("networkidle");
         list_of_products = await this.listOfProductsSelector.all();
+      } else {
+        logger.error(`Product ${productName} not found on any page`);
+        throw error;
       }
     }
   }
