@@ -4,6 +4,7 @@ import { RegistrationAccountPage } from "../pages/RegistrationAccountPage";
 import { LoginPage } from "../pages/LoginPage";
 import { ProductsPage } from "../pages/ProductsPage";
 import logger from "../utils/LoggerUtils";
+import { CartPage } from "../pages/CartPage";
 
 // define fixture type
 type LambdaFixture = {
@@ -11,6 +12,7 @@ type LambdaFixture = {
   registrationAccountPage: RegistrationAccountPage;
   loginPage: LoginPage;
   productsPage: ProductsPage;
+  cartPage: CartPage;
 };
 
 // extends base test with fixture
@@ -56,6 +58,14 @@ export const test = base.extend<LambdaFixture>({
     } catch (error) {
       logger.error(`❌ Error while initializing ProductPage: ${error}`);
       throw error;
+    }
+  },
+  cartPage: async ({ page }, use) => {
+    try {
+      const cartPage = new CartPage(page);
+      await use(cartPage);
+    } catch (error) {
+      logger.error(`❌ Error while initializing CartPage: ${error}`);
     }
   },
 });
