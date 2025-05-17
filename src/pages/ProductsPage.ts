@@ -166,7 +166,7 @@ export class ProductsPage {
       if ((await next_button_selector.count()) > 0) {
         await next_button_selector.click();
         //refresh product list
-        await this.page.waitForLoadState("networkidle");
+        await this.page.waitForLoadState("domcontentloaded");
         list_of_products = await this.listOfProductsSelector.all();
       } else {
         logger.error(`Product ${productName} not found on any page`);
