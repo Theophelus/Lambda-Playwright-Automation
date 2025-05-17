@@ -32,7 +32,7 @@ export class CartPage {
    *@member with a @param productName to verify product is added to the cart successfully
    */
   async verifyProductNameInTheCart(productName: string): Promise<void> {
-    await this.page.waitForLoadState("networkidle");
+    await this.page.waitForLoadState("domcontentloaded");
     //get the rows
     const table_rows = this.tableSelector.getByRole("row");
     try {
