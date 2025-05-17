@@ -1,9 +1,12 @@
 import { expect, Locator, Page } from "@playwright/test";
 import logger from "../utils/LoggerUtils";
+import { error } from "console";
 
 export class CartPage {
   private readonly viewCartSelector: Locator;
-  private tableSelector: Locator;
+  private readonly tableSelector: Locator;
+  private readonly cartIconSelector: Locator;
+  private readonly cartMessageSelector: Locator;
 
   constructor(private page: Page) {
     this.page = page;
@@ -13,6 +16,8 @@ export class CartPage {
     this.tableSelector = this.page.locator(
       "//table[@class='table table-bordered']//tbody"
     );
+    this.cartIconSelector = this.page.locator("#entry_217825");
+    this.cartMessageSelector = this.page.locator("div#entry_217847 p");
   }
 
   /**
@@ -52,6 +57,32 @@ export class CartPage {
       logger.error(
         `❌ ${productName} not found and verified in the cart: ${error}`
       );
+      throw error;
+    }
+  }
+
+  /**
+   * @method to click cart icon
+   */
+  async clickCartIcon() {
+    try {
+      await this.cartIconSelector.click();
+      logger.info(`✅ Clicked cart icon`);
+    } catch (error) {
+      logger.error(`❌ Cannot click 'Cart Icon' something went wrong: ${error}`);
+    }
+  }
+
+  /**
+   *
+   * @param message to be verified against
+   */
+  async verifyEmptyMessage(message: string): Promise<void> {
+    try {
+      logger.info(`${message} is displayed and verified.`);
+      expect(await this.cartMessageSelector.innerText()).toBe(message);
+    } catch (error) {
+      logger.error(`${message} is not displayed: ${error}`);
       throw error;
     }
   }
