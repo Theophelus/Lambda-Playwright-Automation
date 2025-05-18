@@ -37,18 +37,15 @@ export class CartPage {
    *@member with a @param productName to verify product is added to the cart successfully
    */
   async verifyProductNameInTheCart(productName: string): Promise<void> {
-    await this.page.waitForLoadState("domcontentloaded");
-    //get the rows
-    const table_rows = this.tableSelector.getByRole("row");
+    await this.page.waitForLoadState("networkidle");
+
     try {
-      //filter the rows based on provided product name
-      const filter_prod_name = table_rows.filter({ hasText: productName });
+      //get productName cell in the first row
+      const filter_prod_name = await this.filterEachCell(this.tableSelector, 0, 1);
+
       //check if product_name is found and assert
-      if ((await filter_prod_name.count()) > 0) {
-        await expect(await filter_prod_name).toBeVisible({
-          visible: true,
-          timeout: 5000,
-        });
+      if ((await filter_prod_name.innerText()).includes(productName)) {
+        await expect(await filter_prod_name.innerText()).toBe(productName);
         logger.info(
           `✅ ${productName} is added to the cart successfully verified`
         );
@@ -69,7 +66,9 @@ export class CartPage {
       await this.cartIconSelector.click();
       logger.info(`✅ Clicked cart icon`);
     } catch (error) {
-      logger.error(`❌ Cannot click 'Cart Icon' something went wrong: ${error}`);
+      logger.error(
+        `❌ Cannot click 'Cart Icon' something went wrong: ${error}`
+      );
     }
   }
 
@@ -85,5 +84,42 @@ export class CartPage {
       logger.error(`${message} is not displayed: ${error}`);
       throw error;
     }
+  }
+  /**
+   *
+   * @method filterTableRow, will be reused across tables
+   * @parameter take three parameters, @locator of the table, @index of each row and row_value to be search by
+   */
+  async filterTableRow(locator: Locator, index: number): Promise<Locator> {
+    //allow html dom to fully load
+    await this.page.waitForLoadState("domcontentloaded");
+    //get table rows
+    const table_rows = locator.getByRole("row");
+
+    //filter each value in the row
+    const returned_selector: Locator = table_rows.filter();
+
+    //check any matching row are found
+    if ((await returned_selector.count()) === 0) {
+      throw new Error(`No row found for provided index: ${index}`);
+    }
+
+    //return first matching row
+    return table_rows.nth(index).first();
+  }
+  /**
+   * @method to return each cell in a row
+   */
+
+  async filterEachCell(
+    locator: Locator,
+    row_index: number,
+    cell_index: number
+  ): Promise<Locator> {
+    //get each table row by index
+    const current_row = await this.filterTableRow(locator, row_index);
+
+    //return cell based on index provided
+    return current_row.getByRole("cell").nth(cell_index);
   }
 }
