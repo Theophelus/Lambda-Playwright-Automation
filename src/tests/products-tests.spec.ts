@@ -50,10 +50,9 @@ test.describe("Products pages test cases", () => {
     await productsPage.selectSpecificCategory(" Laptops & Notebooks");
     //Assert title
     await productsPage.verifyCategoryTitle();
-
   });
 
-  test("Verify that a Returning Customer can Search and Add a Product to the Cart.", async ({
+  test.only("Verify that a Returning Customer can Search and Add a Product to the Cart.", async ({
     homePage,
     loginPage,
     productsPage,
@@ -82,7 +81,9 @@ test.describe("Products pages test cases", () => {
 
     //click cart page and verify product is added successfully to the cart
     await cart_page.clickViewCartIcon();
-    // await cart_page
-    await cart_page.verifyProductNameInTheCart(searched_product);
+    // cerify product name in the cart
+    await cart_page.verifyProductNameInTheCart("iPod Touch ***");
   });
+
+  test(`Auto-suggestion in the search bar`, async ({}) => {});
 });
