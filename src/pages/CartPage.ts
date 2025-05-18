@@ -41,7 +41,11 @@ export class CartPage {
 
     try {
       //get productName cell in the first row
-      const filter_prod_name = await this.filterEachCell(this.tableSelector, 0, 1);
+      const filter_prod_name = await this.filterEachCell(
+        this.tableSelector,
+        0,
+        1
+      );
 
       //check if product_name is found and assert
       if ((await filter_prod_name.innerText()).includes(productName)) {
@@ -120,6 +124,44 @@ export class CartPage {
     const current_row = await this.filterTableRow(locator, row_index);
 
     //return cell based on index provided
-    return current_row.getByRole("cell").nth(cell_index);
+    return current_row.locator("td").nth(cell_index);
+  }
+  /**
+   * @method - update quanity of specific product in the cart
+   * @param product_name - product name to control condition
+   * @param product_quantity - value to updat the quantity
+   */
+  async updateProductQuantity(product_name: string, product_quantity: number) {
+    let index = 0;
+    let is_found = false;
+    //go through each row
+    while (!is_found) {
+     
+      try {
+
+        let current_cell = await this.filterEachCell(this.tableSelector,index,1);
+        let product_cell_name = await current_cell.innerText();
+        //check if product_cell_name meet condition
+        if (product_cell_name?.includes(product_name)) {
+          // get product rows
+          const product_quantity_cell: Locator = await this.filterEachCell(this.tableSelector,index,3);
+          let update_quantity = product_quantity_cell.locator("//..//input");
+          let press_update_btn = product_quantity_cell.locator("//..//button[@type='submit']");
+          //convert number into string the fill quantity input
+          await update_quantity.fill(product_quantity.toString(), {timeout: 900});
+          // press update quantity button
+          await press_update_btn.click();
+          logger.info(`${product_name} quantity have been updated to ${product_quantity}`);
+          is_found = true;
+          return true;
+        }
+        index++;
+      } catch (error) {
+        logger.error(`$Error occured while updating product:{product_name} to quantity of ${product_quantity}: ${error}`);
+        throw error;
+      }
+
+      if (is_found) break;
+    }
   }
 }
