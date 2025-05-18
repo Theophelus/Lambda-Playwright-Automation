@@ -41,3 +41,9 @@ cd Lambda-playwright-Automation
 ```bash 
  npx playwright install
 ```
+
+4. Running Specific Test
+```bash
+npx playwright test ./src/tests/products-tests.spec.ts
+```
+
