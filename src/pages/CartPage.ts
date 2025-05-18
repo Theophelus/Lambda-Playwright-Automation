@@ -124,7 +124,7 @@ export class CartPage {
     const current_row = await this.filterTableRow(locator, row_index);
 
     //return cell based on index provided
-    return current_row.locator("td").nth(cell_index);
+    return current_row.getByRole("cell").nth(cell_index);
   }
   /**
    * @method - update quanity of specific product in the cart
@@ -136,9 +136,7 @@ export class CartPage {
     let is_found = false;
     //go through each row
     while (!is_found) {
-     
       try {
-
         let current_cell = await this.filterEachCell(this.tableSelector,index,1);
         let product_cell_name = await current_cell.innerText();
         //check if product_cell_name meet condition
@@ -157,10 +155,10 @@ export class CartPage {
         }
         index++;
       } catch (error) {
-        logger.error(`$Error occured while updating product:{product_name} to quantity of ${product_quantity}: ${error}`);
+        logger.error(`$Error occured while updating product: ${product_name} to quantity of: ${product_quantity}: ${error}`);
         throw error;
       }
-
+      //break out of the loop
       if (is_found) break;
     }
   }
