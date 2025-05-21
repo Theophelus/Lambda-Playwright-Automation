@@ -28,7 +28,6 @@ test.describe(`Cart Page - Registered Customer`, () => {
     const product_data = {
       product_name: "iPod Nano",
       product_quantity: 4,
-      // product_total: "$186.40",
     };
     //test execution
     await homePage.navigate();
@@ -47,11 +46,7 @@ test.describe(`Cart Page - Registered Customer`, () => {
     //Verify the cart
     await cartPage.clickViewCartIcon();
     await cartPage.verifyProductNameInTheCart(product_data.product_name);
-    //update cart quantity per product to
-    await cartPage.updateProductQuantity(
-      product_data.product_name,
-      product_data.product_quantity
-    );
-    // await cartPage.verifyProductTotalPriceIsRecalculated();
+    //verify product price have been updated
+    await cartPage.verifyProductTotalPriceIsRecalculated(product_data.product_name);
   });
 });
