@@ -140,26 +140,88 @@ export class CartPage {
         let current_cell = await this.filterEachCell(this.tableSelector,index,1);
         let product_cell_name = await current_cell.innerText();
         //check if product_cell_name meet condition
-        if (product_cell_name?.includes(product_name)) {
+        if (product_cell_name.includes(product_name)) {
           // get product rows
           const product_quantity_cell: Locator = await this.filterEachCell(this.tableSelector,index,3);
           let update_quantity = product_quantity_cell.locator("//..//input");
-          let press_update_btn = product_quantity_cell.locator("//..//button[@type='submit']");
+          let press_update_btn = product_quantity_cell.locator(
+            "//..//button[@type='submit']"
+          );
           //convert number into string the fill quantity input
-          await update_quantity.fill(product_quantity.toString(), {timeout: 900});
+          await update_quantity.fill(product_quantity.toString(), {
+            timeout: 900,
+          });
           // press update quantity button
           await press_update_btn.click();
-          logger.info(`${product_name} quantity have been updated to ${product_quantity}`);
+          logger.info(
+            `${product_name} quantity have been updated to ${product_quantity}`
+          );
           is_found = true;
           return true;
         }
         index++;
       } catch (error) {
-        logger.error(`$Error occured while updating product: ${product_name} to quantity of: ${product_quantity}: ${error}`);
+        logger.error(
+          `$Error occured while updating product: ${product_name} to quantity of: ${product_quantity}: ${error}`
+        );
         throw error;
       }
       //break out of the loop
       if (is_found) break;
+    }
+  }
+  /**
+   * @method to calculate and verify product pricebased on product unit price and quantity
+   * @param product - be used to control the condition and verify product total price based on product unit price and quantity
+   */
+
+  async verifyProductTotalPriceIsRecalculated(product: string): Promise<void> {
+    //control the loop
+    let is_found = false;
+    let index = 0;
+    //go throught each cell
+    while (!is_found) {
+      try {
+        //get each cell in the table
+        let curreny_cell = this.filterEachCell(this.tableSelector, index, 1);
+        //check current product meets criteria
+        if ((await (await curreny_cell).innerText()).includes(product)) {
+          //get current product quantity value
+          let product_quantity = this.filterEachCell( this.tableSelector, index, 3);
+          let product_quantity_value: any =  (await product_quantity).locator("//..//input").getAttribute("value");
+
+          //get the unit price of the current_cell
+          let get_unit_price = (await this.filterEachCell(this.tableSelector, index, 4)).innerText();
+          let unit_price: any = parseFloat((await get_unit_price).split("$")[1]);
+
+          let total_price = parseFloat(await product_quantity_value || "0") * unit_price;
+          let product_total_price = (await (await this.filterEachCell(this.tableSelector, index, 5)).innerText());
+
+    
+          const expected_price_total = total_price.toLocaleString('en-US',
+            {
+              style:'currency',
+              currency: 'USD',
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2
+            })
+          
+            //assert 
+          expect(expected_price_total).toBe(product_total_price);
+          logger.info(`Product total price of: ${product_total_price} have been verified, based on product Quantity updated: ${await product_quantity_value} and Unit Price of : ${await get_unit_price}`)
+          is_found = true;
+          break;
+        }
+
+        index++;
+      } catch (error) {
+        logger.error(`$Error occured while updating product: to quantity of: ${error}`);
+        throw error;
+      }
+      //break the loop once condition met
+      if (is_found) break;
+      //if product not found
+      throw new Error(`${product} not found in the Cart`);
     }
   }
 }
