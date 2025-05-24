@@ -1,21 +1,22 @@
 import { expect, Locator, Page } from "@playwright/test";
 import logger from "../utils/LoggerUtils";
 import { error } from "console";
+import { HelperComponents } from "../components/HelperComponents";
 
 export class CartPage {
   private readonly viewCartSelector: Locator;
   private readonly tableSelector: Locator;
   private readonly cartIconSelector: Locator;
   private readonly cartMessageSelector: Locator;
+  private readonly helper: HelperComponents;
 
   constructor(private page: Page) {
     this.page = page;
-    this.viewCartSelector = this.page.locator(
-      "//a[@class='btn btn-primary btn-block']"
-    );
-    this.tableSelector = this.page.locator(
-      "//table[@class='table table-bordered']//tbody"
-    );
+    //components
+    this.helper = new HelperComponents(this.page);
+    //locators
+    this.viewCartSelector = this.page.locator("//a[@class='btn btn-primary btn-block']");
+    this.tableSelector = this.page.locator("//table[@class='table table-bordered']//tbody");
     this.cartIconSelector = this.page.locator("#entry_217825");
     this.cartMessageSelector = this.page.locator("div#entry_217847 p");
   }
@@ -25,6 +26,9 @@ export class CartPage {
    */
   async clickViewCartIcon(): Promise<void> {
     try {
+
+      //highlight 'view cart button'
+      await this.helper.elementHighlighter(this.viewCartSelector);
       await this.viewCartSelector.click();
       logger.info(`✅ Clicked 'View Cart' button`);
     } catch (error) {
@@ -43,10 +47,12 @@ export class CartPage {
     while (!is_found) {
       try {
         //get productName cell in the first row
-        const filter_prod_name = await this.filterEachCell(this.tableSelector, index, 1);
+        const filter_prod_name = await this.helper.filterRowCells(this.tableSelector, index, 1);
         //check if product_name is found and assert
-        if ((await filter_prod_name.innerText()) === productName) {
-          await expect(await filter_prod_name.innerText()).toBe(productName);
+        if ((await this.helper.innerText(filter_prod_name)) === productName) {
+          //highlight product name in the cart
+          await this.helper.elementHighlighter(filter_prod_name);
+          expect(await this.helper.innerText(filter_prod_name)).toBe(productName);
           logger.info(`✅ ${productName} is added to the cart successfully verified`);
           is_found = true;
           return true;
@@ -66,6 +72,8 @@ export class CartPage {
    */
   async clickCartIcon() {
     try {
+      //highlight Cart Icon
+      await this.helper.elementHighlighter(this.cartIconSelector);
       await this.cartIconSelector.click();
       logger.info(`✅ Clicked cart icon`);
     } catch (error) {
@@ -74,56 +82,20 @@ export class CartPage {
       );
     }
   }
-
   /**
    *
    * @param message to be verified against
    */
   async verifyEmptyMessage(message: string): Promise<void> {
     try {
-      logger.info(`${message} is displayed and verified.`);
+      //highlight product name in the cart
+      await this.helper.elementHighlighter(this.cartMessageSelector);
       expect(await this.cartMessageSelector.innerText()).toBe(message);
+       logger.info(`${message} is displayed and verified.`);
     } catch (error) {
       logger.error(`❌ ${message} is not displayed: ${error}`);
       throw error;
     }
-  }
-  /**
-   *
-   * @method filterTableRow, will be reused across tables
-   * @parameter take three parameters, @locator of the table, @index of each row and row_value to be search by
-   */
-  async filterTableRow(locator: Locator, index: number): Promise<Locator> {
-    //allow html dom to fully load
-    await this.page.waitForLoadState("domcontentloaded");
-    //get table rows
-    const table_rows = locator.getByRole("row");
-
-    //filter each value in the row
-    const returned_selector: Locator = table_rows.filter();
-
-    //check any matching row are found
-    if ((await returned_selector.count()) === 0) {
-      throw new Error(`❌ No row found for provided index: ${index}`);
-    }
-
-    //return first matching row
-    return table_rows.nth(index).first();
-  }
-  /**
-   * @method to return each cell in a row
-   */
-
-  async filterEachCell(
-    locator: Locator,
-    row_index: number,
-    cell_index: number
-  ): Promise<Locator> {
-    //get each table row by index
-    const current_row = await this.filterTableRow(locator, row_index);
-
-    //return cell based on index provided
-    return current_row.getByRole("cell").nth(cell_index);
   }
   /**
    * @method - update quanity of specific product in the cart
@@ -136,12 +108,12 @@ export class CartPage {
     //go through each row
     while (!is_found) {
       try {
-        let current_cell = await this.filterEachCell(this.tableSelector, index, 1);
-        let product_cell_name = await current_cell.innerText();
+        let current_cell = await this.helper.filterRowCells(this.tableSelector, index, 1);
+        let product_cell_name = await this.helper.innerText(current_cell);
         //check if product_cell_name meet condition
         if (product_cell_name.includes(product_name)) {
           // get product rows
-          const product_quantity_cell: Locator = await this.filterEachCell(
+          const product_quantity_cell: Locator = await this.helper.filterRowCells(
             this.tableSelector,index,3);
           let update_quantity = product_quantity_cell.locator("//..//input");
           let press_update_btn = product_quantity_cell.locator("//..//button[@type='submit']");
@@ -180,12 +152,12 @@ export class CartPage {
     while (!is_found) {
       try {
         //get each cell in the table
-        let curreny_cell = this.filterEachCell(this.tableSelector, index, 1);
+        let curreny_cell = await this.helper.filterRowCells(this.tableSelector, index, 1);
         //check current product meets criteria
         const product_cell_name = await (await curreny_cell).innerText();
         if (product_cell_name === product) {
           //get current product quantity value
-          let product_quantity = this.filterEachCell(
+          let product_quantity = this.helper.filterRowCells(
             this.tableSelector, index, 3);
 
           let product_quantity_value: any = (await product_quantity)
@@ -193,11 +165,11 @@ export class CartPage {
             .getAttribute("value");
 
           //get the unit price of the current_cell
-          let get_unit_price = (await this.filterEachCell(this.tableSelector, index, 4)).innerText();
+          let get_unit_price = (await this.helper.filterRowCells(this.tableSelector, index, 4)).innerText();
           let unit_price: any = parseFloat((await get_unit_price).split("$")[1]);
 
           let total_price =parseFloat((await product_quantity_value) || "0") * unit_price;
-          let product_total_price = await (await this.filterEachCell(this.tableSelector, index, 5)).innerText();
+          let product_total_price = await (await this.helper.filterRowCells(this.tableSelector, index, 5)).innerText();
 
           const expected_price_total = total_price.toLocaleString("en-US", {
             style: "currency",
