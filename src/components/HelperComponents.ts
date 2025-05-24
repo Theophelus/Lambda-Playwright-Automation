@@ -1,4 +1,5 @@
 import { Locator, Page } from "@playwright/test";
+import { count } from "console";
 
 export class HelperComponents {
   constructor(private page: Page) {}
@@ -38,5 +39,36 @@ export class HelperComponents {
         }, 200);
       });
     }
+  }
+
+  //filter table rows
+  async filterTableRows(locator: Locator, rowIndex: number): Promise<Locator> {
+    //allow html dom to fully load
+    await this.page.waitForLoadState("domcontentloaded");
+    //get rows in the table,
+    const table_rows = await locator.getByRole("row");
+    let count_table_rows = await table_rows.count();
+    //if table count is 0 throw new error
+    if (count_table_rows === 0 || count_table_rows < 0) {
+      throw new Error(`❌ No row found for provided index: ${rowIndex}`);
+    }
+    //return specific row
+    return table_rows.nth(rowIndex);
+  }
+
+  //filter row cells an return a specifc cell
+  async filterRowCells(locator: Locator, rowIndex: number, rowCell: number): Promise<Locator> {
+    //get specific cell
+    const specific_row = await this.filterTableRows(locator, rowIndex);
+    const row_cell_counter = specific_row
+      .getByRole("cell")
+      .nth(rowCell)
+      .count();
+
+    if ((await specific_row.count()) < 0 || (await row_cell_counter) === 0) {
+      throw new Error(`Row and Cell can not be empty`);
+    }
+    //return cell based on row index and cell value
+    return specific_row.getByRole("cell").nth(rowCell);
   }
 }
