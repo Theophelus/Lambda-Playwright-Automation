@@ -88,6 +88,9 @@ export class CartPage {
    */
   async verifyEmptyMessage(message: string): Promise<void> {
     try {
+
+      //element highlighter
+      await this.helper.elementHighlighter(this.cartMessageSelector)
       //highlight product name in the cart
       await this.helper.elementHighlighter(this.cartMessageSelector);
       expect(await this.cartMessageSelector.innerText()).toBe(message);
