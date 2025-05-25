@@ -25,7 +25,7 @@ export class ProductsPage {
     this.searchForProductSelector = this.page.locator(
       `input[data-autocomplete='5'][placeholder='Search For Products']`
     );
-
+    this.productHeaderSelector = this.page.locator("div#entry_216816 h1")
     this.listOfSearchProductSelector = this.page.locator(
       "//div//ul[@class='dropdown-menu autocomplete w-100']//li//h4//a"
     );
