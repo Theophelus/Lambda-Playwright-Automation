@@ -1,5 +1,6 @@
 import { expect, Locator, Page } from "@playwright/test";
 import logger from "../utils/LoggerUtils";
+import { HelperComponents } from "./HelperComponents";
 
 export class HeaderComponents {
   private readonly hoverMyAccountDropdownMenuSelector: Locator;
@@ -7,9 +8,11 @@ export class HeaderComponents {
   private clickRegisterLinkInputSelector: Locator;
   private myAccountLoginSelectors: Locator;
   private shopByCategorySelector: Locator;
+  private readonly helper: HelperComponents;
 
   constructor(private page: Page) {
     this.page = page;
+    this.helper = new HelperComponents(this.page);
     this.hoverMyAccountDropdownMenuSelector = this.page.locator(
       "//a[@class='icon-left both nav-link dropdown-toggle']",
       { hasText: "My account" }
@@ -48,6 +51,8 @@ export class HeaderComponents {
     try {
       let selector: string = this.myAccountDropdownLocator(element);
       this.clickRegisterLinkInputSelector = this.page.locator(selector);
+      //highlight elements 
+      this.helper.elementHighlighter(this.clickRegisterLinkInputSelector);
       //click register link
       await this.clickRegisterLinkInputSelector.click();
       logger.info(
@@ -105,6 +110,7 @@ export class HeaderComponents {
    */
   async clickShopByCategoryLink(): Promise<void> {
     try {
+       await this.helper.elementHighlighter(this.shopByCategorySelector)
       await this.shopByCategorySelector.click();
       logger.info(
         `✅ '${await this.shopByCategorySelector.innerText()} is clicked'`

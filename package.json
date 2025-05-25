@@ -4,7 +4,12 @@
   "main": "index.js",
   "scripts": {
     "test:headed": "playwright test --headed",
-    "test:product": "playwright test ./src/tests/products-tests.spec.ts --headed"
+    "test:headless": "playwright test",
+    "test": "playwright test",
+    "test:login": "playwright test ./src/tests/login-tests.spec.ts",
+    "test:product": "playwright test ./src/tests/products-tests.spec.ts --headed",
+    "test:cart": "playwright test ./src/tests/cart-tests.spec.ts --headed",
+    "test:showReport": "playwright show-report"
   },
   "keywords": [],
   "author": "",

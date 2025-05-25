@@ -1,8 +1,7 @@
 import { Locator, Page } from "@playwright/test";
-import { count } from "console";
 
 export class HelperComponents {
-  constructor(private page: Page) {}
+  constructor(private page?: Page | undefined) {}
 
   //get selector innerText()
   async innerText(locator: Locator): Promise<string> {
@@ -44,7 +43,7 @@ export class HelperComponents {
   //filter table rows
   async filterTableRows(locator: Locator, rowIndex: number): Promise<Locator> {
     //allow html dom to fully load
-    await this.page.waitForLoadState("domcontentloaded");
+    await this.page?.waitForLoadState("domcontentloaded")
     //get rows in the table,
     const table_rows = await locator.getByRole("row");
     let count_table_rows = await table_rows.count();
