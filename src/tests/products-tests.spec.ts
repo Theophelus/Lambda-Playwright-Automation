@@ -52,7 +52,7 @@ test.describe("Products pages test cases", () => {
     await productsPage.verifyCategoryTitle();
   });
 
-  test.only("Verify that a Returning Customer can Search and Add a Product to the Cart.", async ({
+  test("Verify that a Returning Customer can Search and Add a Product to the Cart.", async ({
     homePage,
     loginPage,
     productsPage,
@@ -81,7 +81,7 @@ test.describe("Products pages test cases", () => {
 
     //click cart page and verify product is added successfully to the cart
     await cart_page.clickViewCartIcon();
-    // cerify product name in the cart
+    // await cart_page
     await cart_page.verifyProductNameInTheCart("iPod Touch ***");
   });
 
