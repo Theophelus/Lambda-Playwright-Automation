@@ -5,6 +5,7 @@ import { HeaderComponents } from "../components/HeaderComponents";
 import { clickSpecificCategory } from "../components/CategoryComponent";
 import { error } from "console";
 import { CartPage } from "./CartPage";
+import { HelperComponents } from "../components/HelperComponents";
 
 export class ProductsPage {
   //define locators
@@ -15,10 +16,12 @@ export class ProductsPage {
   private readonly categoryTitleSelector: Locator;
   private readonly listOfProductsSelector: Locator;
   private readonly headerComponent: HeaderComponents;
+  private readonly helper: HelperComponents;
 
   constructor(private page: Page) {
     this.page = page;
     this.headerComponent = new HeaderComponents(this.page);
+    this.helper = new HelperComponents(this.page)
     this.searchForProductSelector = this.page.locator(
       `input[data-autocomplete='5'][placeholder='Search For Products']`
     );
@@ -26,7 +29,6 @@ export class ProductsPage {
     this.listOfSearchProductSelector = this.page.locator(
       "//div//ul[@class='dropdown-menu autocomplete w-100']//li//h4//a"
     );
-    this.productHeaderSelector = this.page.locator("div#entry_216816 h1");
     this.topCategorySelector = this.page.locator(
       "//ul[@class='navbar-nav vertical']//li//a"
     );
@@ -77,15 +79,14 @@ export class ProductsPage {
    */
 
   async assertProductHeaderTitle(): Promise<void> {
+    await this.page.waitForLoadState("domcontentloaded");
     try {
+      //hightlight product Header to increase visibility
+      await this.helper.elementHighlighter(this.productHeaderSelector);
       await expect(this.productHeaderSelector).toBeVisible();
-      logger.info(
-        `✅ ${this.productHeaderSelector.innerText()} product header is verified.`
-      );
+      logger.info(`✅ ${await this.productHeaderSelector.innerText()} product header is verified.`);
     } catch (error) {
-      logger.error(
-        `❌ Error while trying to verify '${this.productHeaderSelector.innerText()} header': ${error}`
-      );
+      logger.error(`❌ Error while trying to verify '${await this.productHeaderSelector.innerText()} header': ${error}`);
       throw error;
     }
   }
@@ -146,6 +147,7 @@ export class ProductsPage {
               .locator("//button[@title='Add to Cart']")
               .first();
               await add_to_cart_btn.hover();
+              await this.helper.elementHighlighter(add_to_cart_btn)
               await add_to_cart_btn.click({ force: true, timeout: 10000 });
               logger.info(`✅ Clicked 'Add to Cart' Button for: ${await current_product.innerText()}`);
 
