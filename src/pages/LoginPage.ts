@@ -3,6 +3,7 @@ import logger from "../utils/LoggerUtils";
 import { HeaderComponents } from "../components/HeaderComponents";
 import { AccountPage } from "../pages/AccountPage";
 import { typeRequireText } from "../components/Inputs";
+import { HelperComponents } from "../components/HelperComponents";
 export class LoginPage {
   //define locators
   private readonly emailAddressInputSelector;
@@ -10,11 +11,14 @@ export class LoginPage {
   private readonly loginButtonSelector: Locator;
   private readonly returningCustomerTextSelector: Locator;
   private headerComponents: HeaderComponents;
+  private readonly helper: HelperComponents;
 
   //create a constructor
   constructor(private page: Page) {
     this.page = page;
+
     this.headerComponents = new HeaderComponents(this.page);
+    this.helper = new HelperComponents(this.page);
     this.emailAddressInputSelector = this.page.getByLabel("E-Mail Address");
     this.passwordInputSelector = this.page.getByLabel("Password");
     this.loginButtonSelector = this.page.locator(
@@ -68,6 +72,7 @@ export class LoginPage {
 
   async clickLoginBtn(): Promise<AccountPage> {
     try {
+      await this.helper.elementHighlighter(this.loginButtonSelector);
       await this.loginButtonSelector.click({ timeout: 5000 });
       logger.info("✅ 'Login' button is clicked.");
     } catch (error) {
