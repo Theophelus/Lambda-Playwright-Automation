@@ -13,6 +13,8 @@ const customFormat = winston.format.printf(({ level, message, timestamp }) => {
     case "info":
       chalkColorPalletteLevel = chalk.green(level);
       break;
+    case "warn":
+      chalkColorPalletteLevel = chalk.yellowBright(level);
     case "error":
       chalkColorPalletteLevel = chalk.red(level);
       break;
@@ -32,6 +34,10 @@ const logger = winston.createLogger({
     new winston.transports.File({
       filename: path.join(logginDir, "execution_run.log"),
       level: "info",
+    }),
+    new winston.transports.File({
+      filename: path.join(logginDir, "warning.log"),
+      level: "warn",
     }),
     new winston.transports.File({
       filename: path.join(logginDir, "error.log"),
