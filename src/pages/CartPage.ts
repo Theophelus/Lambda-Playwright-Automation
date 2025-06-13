@@ -2,12 +2,16 @@ import { expect, Locator, Page } from "@playwright/test";
 import logger from "../utils/LoggerUtils";
 import { error } from "console";
 import { HelperComponents } from "../components/HelperComponents";
+import { Checkout } from "./Checkout";
 
 export class CartPage {
+  //Locators
   private readonly viewCartSelector: Locator;
   private readonly tableSelector: Locator;
   private readonly cartIconSelector: Locator;
   private readonly cartMessageSelector: Locator;
+  private readonly checkoutButtonSelector: Locator;
+  //POM Components
   private readonly helper: HelperComponents;
 
   constructor(private page: Page) {
@@ -15,9 +19,16 @@ export class CartPage {
     //components
     this.helper = new HelperComponents(this.page);
     //locators
-    this.viewCartSelector = this.page.locator("//a[@class='btn btn-primary btn-block']");
-    this.tableSelector = this.page.locator("//table[@class='table table-bordered']//tbody");
+    this.viewCartSelector = this.page.locator(
+      "//a[@class='btn btn-primary btn-block']"
+    );
+    this.tableSelector = this.page.locator(
+      "//table[@class='table table-bordered']//tbody"
+    );
     this.cartIconSelector = this.page.locator("#entry_217825");
+    this.checkoutButtonSelector = this.page.locator(
+      "//div//a[contains(text(), 'Checkout')]"
+    );
     this.cartMessageSelector = this.page.locator("div#entry_217847 p");
   }
 
@@ -26,7 +37,6 @@ export class CartPage {
    */
   async clickViewCartIcon(): Promise<void> {
     try {
-
       //highlight 'view cart button'
       await this.helper.elementHighlighter(this.viewCartSelector);
       await this.viewCartSelector.click();
@@ -47,13 +57,21 @@ export class CartPage {
     while (!is_found) {
       try {
         //get productName cell in the first row
-        const filter_prod_name = await this.helper.filterRowCells(this.tableSelector, index, 1);
+        const filter_prod_name = await this.helper.filterRowCells(
+          this.tableSelector,
+          index,
+          1
+        );
         //check if product_name is found and assert
         if ((await this.helper.innerText(filter_prod_name)) === productName) {
           //highlight product name in the cart
           await this.helper.elementHighlighter(filter_prod_name);
-          expect(await this.helper.innerText(filter_prod_name)).toBe(productName);
-          logger.info(`✅ ${productName} is added to the cart successfully verified`);
+          expect(await this.helper.innerText(filter_prod_name)).toBe(
+            productName
+          );
+          logger.info(
+            `✅ ${productName} is added to the cart successfully verified`
+          );
           is_found = true;
           return true;
         } else {
@@ -61,7 +79,10 @@ export class CartPage {
         }
         if (is_found) break;
         //not found
-      } catch (error) {logger.error(`❌ ${productName} not found and verified in the cart: ${error}`);
+      } catch (error) {
+        logger.error(
+          `❌ ${productName} not found and verified in the cart: ${error}`
+        );
         throw error;
       }
     }
@@ -88,13 +109,12 @@ export class CartPage {
    */
   async verifyEmptyMessage(message: string): Promise<void> {
     try {
-
       //element highlighter
-      await this.helper.elementHighlighter(this.cartMessageSelector)
+      await this.helper.elementHighlighter(this.cartMessageSelector);
       //highlight product name in the cart
       await this.helper.elementHighlighter(this.cartMessageSelector);
       expect(await this.cartMessageSelector.innerText()).toBe(message);
-       logger.info(`${message} is displayed and verified.`);
+      logger.info(`${message} is displayed and verified.`);
     } catch (error) {
       logger.error(`❌ ${message} is not displayed: ${error}`);
       throw error;
@@ -111,15 +131,21 @@ export class CartPage {
     //go through each row
     while (!is_found) {
       try {
-        let current_cell = await this.helper.filterRowCells(this.tableSelector, index, 1);
+        let current_cell = await this.helper.filterRowCells(
+          this.tableSelector,
+          index,
+          1
+        );
         let product_cell_name = await this.helper.innerText(current_cell);
         //check if product_cell_name meet condition
         if (product_cell_name.includes(product_name)) {
           // get product rows
-          const product_quantity_cell: Locator = await this.helper.filterRowCells(
-            this.tableSelector,index,3);
+          const product_quantity_cell: Locator =
+            await this.helper.filterRowCells(this.tableSelector, index, 3);
           let update_quantity = product_quantity_cell.locator("//..//input");
-          let press_update_btn = product_quantity_cell.locator("//..//button[@type='submit']");
+          let press_update_btn = product_quantity_cell.locator(
+            "//..//button[@type='submit']"
+          );
 
           //convert number into string the fill quantity input
           await update_quantity.fill(product_quantity.toString(), {
@@ -127,7 +153,9 @@ export class CartPage {
           });
           // press update quantity button
           await press_update_btn.click();
-          logger.info(`✅ ${product_name} quantity have been updated to ${product_quantity}`);
+          logger.info(
+            `✅ ${product_name} quantity have been updated to ${product_quantity}`
+          );
           is_found = true;
           return true;
         } else {
@@ -137,7 +165,9 @@ export class CartPage {
         //break out of the loop
         if (is_found) break;
       } catch (error) {
-        logger.error(`❌ $Error occured while updating product: ${product_name} to quantity of: ${product_quantity}: ${error}`);
+        logger.error(
+          `❌ $Error occured while updating product: ${product_name} to quantity of: ${product_quantity}: ${error}`
+        );
         throw error;
       }
     }
@@ -155,24 +185,38 @@ export class CartPage {
     while (!is_found) {
       try {
         //get each cell in the table
-        let curreny_cell = await this.helper.filterRowCells(this.tableSelector, index, 1);
+        let curreny_cell = await this.helper.filterRowCells(
+          this.tableSelector,
+          index,
+          1
+        );
         //check current product meets criteria
         const product_cell_name = await (await curreny_cell).innerText();
         if (product_cell_name === product) {
           //get current product quantity value
           let product_quantity = this.helper.filterRowCells(
-            this.tableSelector, index, 3);
+            this.tableSelector,
+            index,
+            3
+          );
 
           let product_quantity_value: any = (await product_quantity)
             .locator("//..//input")
             .getAttribute("value");
 
           //get the unit price of the current_cell
-          let get_unit_price = (await this.helper.filterRowCells(this.tableSelector, index, 4)).innerText();
-          let unit_price: any = parseFloat((await get_unit_price).split("$")[1]);
+          let get_unit_price = (
+            await this.helper.filterRowCells(this.tableSelector, index, 4)
+          ).innerText();
+          let unit_price: any = parseFloat(
+            (await get_unit_price).split("$")[1]
+          );
 
-          let total_price =parseFloat((await product_quantity_value) || "0") * unit_price;
-          let product_total_price = await (await this.helper.filterRowCells(this.tableSelector, index, 5)).innerText();
+          let total_price =
+            parseFloat((await product_quantity_value) || "0") * unit_price;
+          let product_total_price = await (
+            await this.helper.filterRowCells(this.tableSelector, index, 5)
+          ).innerText();
 
           const expected_price_total = total_price.toLocaleString("en-US", {
             style: "currency",
@@ -182,7 +226,9 @@ export class CartPage {
           });
           //assert
           expect(expected_price_total).toBe(product_total_price);
-          logger.info(`✅ Product total price of: ${product_total_price} have been verified, based on product Quantity updated: ${await product_quantity_value} and Unit Price of : ${await get_unit_price}`);
+          logger.info(
+            `✅ Product total price of: ${product_total_price} have been verified, based on product Quantity updated: ${await product_quantity_value} and Unit Price of : ${await get_unit_price}`
+          );
           is_found = true;
           break;
         } else {
@@ -195,5 +241,21 @@ export class CartPage {
         throw error;
       }
     }
+  }
+
+  //implement class chaining
+  async clickCheckoutBtn(): Promise<Checkout> {
+    try {
+      await this.checkoutButtonSelector.click();
+      logger.info(`Checkout button is clicked.`);
+    } catch (error) {
+      logger.error(`Checkout button could not be clicked: ${error}`);
+      throw error;
+    }
+
+    //
+    await this.page.waitForLoadState("domcontentloaded");
+    //return and load the state for Checkout page
+    return new Checkout(this.page);
   }
 }
