@@ -10,11 +10,11 @@ test.describe(`Cart Page - Registered Customer`, () => {
     //test execution
     await homePage.navigate();
     await loginPage.hoverMyAccount();
-    // await loginPage.clickLoginAccountLink();
-    // await loginPage.fillInLoginForm();
+    await loginPage.clickLoginAccountLink();
+    await loginPage.fillInLoginForm();
     //actions
-    // const account_page = await loginPage.clickLoginBtn();
-    // await account_page.expectedMyAccountTitleToBeVisible();
+    const account_page = await loginPage.clickLoginBtn();
+    await account_page.expectedMyAccountTitleToBeVisible();
     await cartPage.clickCartIcon();
     //assertions
     await cartPage.verifyEmptyMessage("Your shopping cart is empty!");
