@@ -2,7 +2,7 @@ import { expect, Locator, Page } from "@playwright/test";
 import logger from "../utils/LoggerUtils";
 import { error } from "console";
 import { HelperComponents } from "../components/HelperComponents";
-import { Checkout } from "./Checkout";
+import { CheckoutPage } from "./CheckoutPage";
 
 export class CartPage {
   //Locators
@@ -51,7 +51,7 @@ export class CartPage {
    *@member with a @param productName to verify product is added to the cart successfully
    */
   async verifyProductNameInTheCart(productName: string): Promise<any> {
-    await this.page.waitForLoadState("networkidle");
+    // await this.page.waitForLoadState("networkidle");
     let is_found = false;
     let index = 0;
     while (!is_found) {
@@ -237,25 +237,26 @@ export class CartPage {
         //break the loop once condition met
         if (is_found) break;
         // //if product not found
-      } catch (error) {logger.error(`❌ $Error occured while updating product: to quantity of: ${error}`);
+      } catch (error) {
+        logger.error(
+          `❌ $Error occured while updating product: to quantity of: ${error}`
+        );
         throw error;
       }
     }
   }
 
   //implement class chaining
-  async clickCheckoutBtn(): Promise<Checkout> {
+  async clickCheckoutBtn(): Promise<CheckoutPage> {
     try {
-      await this.checkoutButtonSelector.click();
+      await this.checkoutButtonSelector.click({ timeout: 10000 });
       logger.info(`Checkout button is clicked.`);
+      //return and load the state for Checkout page
+      return new CheckoutPage(this.page);
+
     } catch (error) {
       logger.error(`Checkout button could not be clicked: ${error}`);
       throw error;
     }
-
-    //
-    await this.page.waitForLoadState("domcontentloaded");
-    //return and load the state for Checkout page
-    return new Checkout(this.page);
   }
 }
