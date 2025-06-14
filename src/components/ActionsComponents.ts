@@ -16,4 +16,8 @@ export class ActionsComponents {
   async check(locator: Locator): Promise<void>{
     await locator.check();
   }
+  //selectOption from dropdown menu
+  async selectOptionByLabel(dropdownLocator: Locator, element: string, timeout?: number){
+    await dropdownLocator.selectOption({label: element}, {timeout: timeout})
+  }
 }
