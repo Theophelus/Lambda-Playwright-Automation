@@ -1,13 +1,18 @@
 import { Page } from "@playwright/test";
 import logger from "../utils/LoggerUtils";
+import { PageComponents } from "./PageComponents";
 import { HeaderComponents } from "../components/HeaderComponents";
+import { NavigationComponent } from "../components/NavigationComponent";
 
 export class HomePage {
-  private readonly headerComponents: HeaderComponents;
+  private readonly components: PageComponents;
 
   constructor(private page: Page) {
     this.page = page;
-    this.headerComponents = new HeaderComponents(page);
+    this.components = {
+      header: new HeaderComponents(this.page),
+      navigation: new NavigationComponent(this.page),
+    };
   }
 
   /**
@@ -16,7 +21,8 @@ export class HomePage {
 
   async navigate(): Promise<void> {
     try {
-      await this.page.goto("/", { waitUntil: "domcontentloaded" });
+      await this.components.navigation?.navigateToHomePage();
+      await this.components.navigation?.waitForLoadState();
       logger.info("✅ Navigating to the home page");
     } catch (error) {
       logger.error(
@@ -26,7 +32,10 @@ export class HomePage {
     }
   }
 
+
   async verifyMyAccountLinksAfterLogin(expected_results: string[]) {
-    await this.headerComponents.myAccountDropDownLinksAsCustomer(expected_results);
+    await this.components.header?.myAccountDropDownLinksAsCustomer(
+      expected_results
+    );
   }
 }
