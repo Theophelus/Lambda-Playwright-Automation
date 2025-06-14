@@ -1,7 +1,17 @@
 import { Locator, Page } from "@playwright/test";
+import logger from "../utils/LoggerUtils";
+import { PageComponents } from "../pages/PageComponents";
+import { ActionsComponents } from "./ActionsComponents";
+import { time } from "console";
 
 export class HelperComponents {
-  constructor(private page?: Page | undefined) {}
+  private readonly components: PageComponents;
+  constructor(private page: Page) {
+    this.page = page;
+    this.components = {
+      actions: new ActionsComponents(this.page),
+    };
+  }
 
   //get selector innerText()
   async innerText(locator: Locator): Promise<string> {
@@ -43,7 +53,7 @@ export class HelperComponents {
   //filter table rows
   async filterTableRows(locator: Locator, rowIndex: number): Promise<Locator> {
     //allow html dom to fully load
-    await this.page?.waitForLoadState("domcontentloaded")
+    await this.page?.waitForLoadState("domcontentloaded");
     //get rows in the table,
     const table_rows = await locator.getByRole("row");
     let count_table_rows = await table_rows.count();
@@ -69,5 +79,31 @@ export class HelperComponents {
     }
     //return cell based on row index and cell value
     return specific_row.getByRole("cell").nth(rowCell);
+  }
+
+  //define a method to filter a dropdown by name
+  async filterByName(dropdownLocacor: Locator, valueName: string): Promise<any> {
+
+    try {
+       //apply playwright filter to find a specific country
+      const country_filtered = dropdownLocacor
+        .locator("option")
+        .filter({ hasText: valueName });
+
+      //check if the list of countries are empty
+      if ((await country_filtered.count()) === 0) {
+        logger.warn(`⚠️ dropdown menu is empty`);
+        return;
+      }
+
+      if (await this.innerText(country_filtered) === valueName) {
+        await this.components.actions?.selectOptionByLabel(dropdownLocacor, valueName, 7000);
+        logger.info(`✅ "${await this.innerText(country_filtered)}" selected from list dropdown menu.`);
+        return;
+      }
+    } catch (error) {
+      logger.error(`❌ ${valueName} is not found from the dropdown menu: ${error}`);
+      throw error;
+    }
   }
 }
