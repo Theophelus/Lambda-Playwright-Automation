@@ -21,11 +21,11 @@ export class ProductsPage {
   constructor(private page: Page) {
     this.page = page;
     this.headerComponent = new HeaderComponents(this.page);
-    this.helper = new HelperComponents(this.page)
+    this.helper = new HelperComponents(this.page);
     this.searchForProductSelector = this.page.locator(
       `input[data-autocomplete='5'][placeholder='Search For Products']`
     );
-    this.productHeaderSelector = this.page.locator("div#entry_216816 h1")
+    this.productHeaderSelector = this.page.locator("div#entry_216816 h1");
     this.listOfSearchProductSelector = this.page.locator(
       "//div//ul[@class='dropdown-menu autocomplete w-100']//li//h4//a"
     );
@@ -84,9 +84,13 @@ export class ProductsPage {
       //hightlight product Header to increase visibility
       await this.helper.elementHighlighter(this.productHeaderSelector);
       await expect(this.productHeaderSelector).toBeVisible();
-      logger.info(`✅ ${await this.productHeaderSelector.innerText()} product header is verified.`);
+      logger.info(
+        `✅ ${await this.productHeaderSelector.innerText()} product header is verified.`
+      );
     } catch (error) {
-      logger.error(`❌ Error while trying to verify '${await this.productHeaderSelector.innerText()} header': ${error}`);
+      logger.error(
+        `❌ Error while trying to verify '${await this.productHeaderSelector.innerText()} header': ${error}`
+      );
       throw error;
     }
   }
@@ -100,7 +104,12 @@ export class ProductsPage {
    * @method to select a specific category from the list
    */
   async selectSpecificCategory(category_name: string): Promise<void> {
-    await clickSpecificCategory(category_name, this.topCategorySelector);
+    await this.page.waitForLoadState("domcontentloaded");
+    await clickSpecificCategory(
+      category_name,
+      this.topCategorySelector,
+      this.page
+    );
   }
   /**
    * @method to verify category title after filters
@@ -146,10 +155,12 @@ export class ProductsPage {
             const add_to_cart_btn = current_product
               .locator("//button[@title='Add to Cart']")
               .first();
-              await add_to_cart_btn.hover();
-              await this.helper.elementHighlighter(add_to_cart_btn)
-              await add_to_cart_btn.click({ force: true, timeout: 10000 });
-              logger.info(`✅ Clicked 'Add to Cart' Button for: ${await current_product.innerText()}`);
+            await add_to_cart_btn.hover();
+            await this.helper.elementHighlighter(add_to_cart_btn);
+            await add_to_cart_btn.click({ force: true, timeout: 10000 });
+            logger.info(
+              `✅ Clicked 'Add to Cart' Button for: ${await current_product.innerText()}`
+            );
 
             break;
           } catch (error) {
