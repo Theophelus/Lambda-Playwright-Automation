@@ -67,6 +67,7 @@ export class HelperComponents {
 
   //filter row cells an return a specifc cell
   async filterRowCells(locator: Locator, rowIndex: number, rowCell: number): Promise<Locator> {
+    await this.page.waitForLoadState("domcontentloaded");
     //get specific cell
     const specific_row = await this.filterTableRows(locator, rowIndex);
     const row_cell_counter = specific_row
@@ -97,6 +98,7 @@ export class HelperComponents {
       }
 
       if (await this.innerText(country_filtered) === valueName) {
+        // await country_filtered.scrollIntoViewIfNeeded();
         await this.components.actions?.selectOptionByLabel(dropdownLocacor, valueName, 7000);
         logger.info(`✅ "${await this.innerText(country_filtered)}" selected from list dropdown menu.`);
         return;
