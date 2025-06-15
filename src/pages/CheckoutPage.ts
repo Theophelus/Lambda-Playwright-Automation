@@ -4,10 +4,10 @@ import { AssertionsComponents } from "../components/AssertionsComponents";
 import logger from "../utils/LoggerUtils";
 import { HelperComponents } from "../components/HelperComponents";
 import { ActionsComponents } from "../components/ActionsComponents";
-import { log } from "console";
 const newAddress = require("../data/address.json");
 
 export class CheckoutPage {
+  
   //define locators
   private readonly billingAddrssSelector: Locator;
   private readonly newAddressSelector: Locator;
@@ -66,6 +66,7 @@ export class CheckoutPage {
    * @method to checkout with new address
    */
   async checkOutWithNewAddress(): Promise<void> {
+    await this.page.waitForLoadState("domcontentloaded");
     //click new address radio button
     await this.newAddressSelector.check();
     //check if the file is not empty
@@ -86,7 +87,7 @@ export class CheckoutPage {
        * @country
        * @region
        */
-      this.lastname.fill(address.full_name);
+      this.firstName.fill(address.full_name);
       this.lastname.fill(address.last_name);
       this.address.fill(address.street_address);
       this.city.fill(address.city);
@@ -94,8 +95,7 @@ export class CheckoutPage {
       //click country dropdown and select country
       await this.country.click();
       await this.components.helper?.filterByName(this.listOfCountries, address.country);
-      //click region dropdown menu and select province
-      await this.region.scrollIntoViewIfNeeded();
+      // click region dropdown menu and select province
       await this.region.click({timeout: 3000});
       await this.components.helper?.filterByName(this.region, address.province);
     } catch (error) {
@@ -103,4 +103,27 @@ export class CheckoutPage {
       throw error;
     }
   }
+   async checkTermsAndConditon() {
+    await this.page.waitForLoadState("domcontentloaded");
+    try {
+      this.termsAndConditionsSelector.check();
+      logger.info(`${await this.components.helper?.innerText(this.termsAndConditionsSelector)} checkbox is checked`);
+      
+    } catch (error) {
+      logger.error(` have read and agree to the Terms & Conditions checkbox is not checked: ${error}`)
+      throw error;
+    }
+  }
+
+  async clickContinueButton() {
+    try {
+      this.components.actions?.click(this.continueBtnSelector);
+      await this.page.waitForTimeout(10000);
+      logger.info(`${await this.components.helper?.innerText(this.continueBtnSelector)} button is clicked.`);
+    } catch (error) {
+      logger.error(`Continue button could not be clicked: ${error}`)
+      throw error;
+    }
+  }
+
 }
